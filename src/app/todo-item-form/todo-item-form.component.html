@@ -1,0 +1,28 @@
+<!-- <div mat-dialog-title> -->
+<h5 mat-dialog-title>New ToDo Task</h5>
+<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button> -->
+<!-- </div> -->
+<mat-dialog-content *ngIf="form">
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title">
+      <mat-error *ngIf="!form.get('title')?.valid && form.get('title')?.touched" class="text-danger">
+        *Please add ToDo Title
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Body</mat-label>
+      <input matInput formControlName="body">
+      <mat-error *ngIf="!form.get('body')?.valid && form.get('body')?.touched" class="text-danger">
+        *Please add ToDo Description
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close type="button">Close</button>
+  <button mat-button type="button" [disabled]="!form?.valid" (click)="addToDoItem()">Save changes</button>
+</mat-dialog-actions>

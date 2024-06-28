@@ -1,0 +1,23 @@
+
+  <div
+    [style.height.px]="model?.domRect?.height"
+    [style.width.px]="model?.domRect?.width"
+    [style.transform]="'translate3d(' + model?.domRect?.left + 'px,' + model?.domRect?.top + 'px, 0px )'"
+    resize
+    (resizeEnd)="updateSize($event)"
+    class="example-box"
+    [cdkDragBoundary]="boundary"
+    cdkDrag
+    (cdkDragEnded)="dropped($event)"
+    [style.background-color]="model?.color"
+  >
+    <!-- I can only be drhbhagged within the dotted container -->
+    <app-card [model]="model"></app-card>
+    <div class="example-handle">
+      <mat-icon  inline (click)="removed()">delete</mat-icon>
+    </div>
+  </div>
+<!-- {{itemSize | json}} -->
+<!-- Copyright 2023 Google LLC. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at https://angular.io/license -->

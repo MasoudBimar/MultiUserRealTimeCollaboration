@@ -1,0 +1,24 @@
+.todo-boundary {
+  width: 100%;
+  height: 90%;
+  border: dotted #ccc 2px;
+  display: inline-block;
+}
+.done-boundary {
+  width: 30%;
+  height: 90%;
+  border: dotted #ccc 2px;
+  display: inline-block;
+}
+
+.doing-boundary {
+  width: 30%;
+  height: 90%;
+  border: dotted #ccc 2px;
+  display: inline-block;
+}
+
+
+.toolbar{
+  display: block;
+}
