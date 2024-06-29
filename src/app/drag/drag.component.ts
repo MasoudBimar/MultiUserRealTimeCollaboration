@@ -34,15 +34,18 @@ export class DragComponent implements OnInit {
    */
   constructor(private elementRef: ElementRef ) {
     // Use the `Read` phase to read geometric properties after all writes have occurred.
-    afterNextRender(() => {
-      if (this.model && !this.model.domRect) {
-        this.model.domRect = elementRef.nativeElement.getBoundingClientRect();
-      }
-    }, {phase: AfterRenderPhase.Read});
+    // afterNextRender(() => {
+    //   if (this.model && !this.model.domRect) {
+    //     this.model.domRect = elementRef.nativeElement.getBoundingClientRect();
+    //   }
+    // }, {phase: AfterRenderPhase.Read});
   }
   ngOnInit(): void {
   }
   updateSize(ev: DOMRect) {
+    ev.x =  ev.left;
+    ev.y =  ev.top;
+    console.log("🚀 ~ DragComponent ~ updateSize ~ ev:", ev)
     if (this.model) {
       this.model.domRect = { ...ev };
     }
@@ -50,8 +53,10 @@ export class DragComponent implements OnInit {
   }
   dropped(ev: any) {
     if (this.model?.domRect && ev.dropPoint) {
-      this.model.domRect.x = ev.dropPoint.x;
-      this.model.domRect.y = ev.dropPoint.y;
+      let newX = this.model.domRect.x + ev.distance.x;
+      let newY = this.model.domRect.y + ev.distance.y;
+      this.model.domRect.x = this.model.domRect.left = newX ;
+      this.model.domRect.y = this.model.domRect.top = newY ;
     }
     this.itemDropped.emit({...ev, index: this.index});
   }

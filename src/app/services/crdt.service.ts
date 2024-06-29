@@ -15,7 +15,7 @@ export class CRDTService {
 
   constructor() {
     // String data in indexdb of browser
-    // const indexeddbProvider = new IndexeddbPersistence('TodoDoc', this.ydoc);
+    const indexeddbProvider = new IndexeddbPersistence('TodoDoc', this.ydoc);
     this.setupWebsocketConnection();
     this.loadTodoDoc();
     this.observeChanges();
@@ -57,8 +57,8 @@ export class CRDTService {
   insert(newItem: ToDoItem) {
     let array = [];
     array.push(Utility.stringify(newItem));
-    // console.log("🚀 ~ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ~ insert ~ array:", array);
     this.yarray?.insert(this.yarray.length, array);
+    console.log("🚀 ~ CRDTService ~ insert ~ yarray:", this.yarray?.toArray());
     this.syncArrayWithYArray();
     // this.loadTodoDoc();
     // this.observeChanges();

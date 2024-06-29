@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SnackBarService } from './services/snackbar.service';
 import { TodoItemManagerService } from './services/todo-item-manager.service';
 import { CRDTService } from './services/crdt.service';
+import { Subject, debounce, interval } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -21,9 +22,18 @@ import { CRDTService } from './services/crdt.service';
 export class AppComponent {
   title = 'DragAndDrop';
   newToDoItemForm: FormGroup;
+  itemResized$: Subject<any> = new Subject<any>();
+  itemDropped$: Subject<any> = new Subject<any>();
   toDoItemList: ToDoItem[] = [];
   constructor(public dialog: MatDialog,public snackBarService: SnackBarService, private todoItemManagerService: TodoItemManagerService,public crdtService: CRDTService) {
     this.newToDoItemForm = this.creatTodoForm();
+    this.itemResized$.pipe( debounce(i => interval(100))).subscribe((event) => {
+      this.crdtService.updateItem(event.event.index, event.model );
+    });
+
+    this.itemDropped$.pipe( debounce(i => interval(100))).subscribe((event) => {
+      this.crdtService.updateItem(event.event.index, event.model );
+    });
   }
   private creatTodoForm(): FormGroup<any> {
     return new FormGroup({
@@ -48,19 +58,19 @@ export class AppComponent {
     });
   }
 
-  itemDropped(event: any, model: ToDoItem) { //CdkDragDrop<any>
-    console.log("🚀 ~ AppComponent ~ itemDropped ~ event:", event);
-    console.log(this.crdtService.array);
-    // this.crdtService.updateItem(event.index, model );
-  }
+  // itemDropped(event: any, model: ToDoItem) { //CdkDragDrop<any>
+  //   console.log("🚀 ~ AppComponent ~ itemDropped ~ event:", event);
+  //   console.log(this.crdtService.array);
+  //   // this.crdtService.updateItem(event.index, model );
+  // }
 
-  itemResized(event: any, model: ToDoItem) { //CdkDragDrop<any>
-    console.log("🚀 ~ AppComponent ~ itemDropped ~ event:", event);
-    console.log(this.crdtService.array);
-    // setTimeout(() => {
-    //   this.crdtService.updateItem(event.index, model );
-    // }, 5000);
-  }
+  // itemResizedHandler(event: any, model: ToDoItem) { //CdkDragDrop<any>
+  //   console.log("🚀 ~ AppComponent ~ itemDropped ~ event:", event);
+  //   console.log(this.crdtService.array);
+  //   setTimeout(() => {
+
+  //   }, 1000);
+  // }
 
   connect(){
     this.crdtService.connect();

@@ -6,7 +6,7 @@
 <div class="todo-boundary">
   <div *ngFor="let item of crdtService.array; let idx = index">
 
-    <app-drag boundary="todo-boundary" (itemResized)="itemResized($event, item)" (itemDropped)="itemDropped($event, item)" (itemRemoved)="delete(idx)"
-      *ngIf="item" [model]="item"></app-drag>
+    <app-drag boundary="todo-boundary" (itemResized)="itemResized$.next({event: $event, model: item})" (itemDropped)="itemDropped$.next({event: $event, model: item})"
+      (itemRemoved)="delete(idx)" [index]="idx" *ngIf="item" [model]="item"></app-drag>
   </div>
 </div>
