@@ -45,7 +45,6 @@ export class Utility {
 
   static calculateClientRect(element: HTMLElement) {
     let rect = element.getBoundingClientRect();
-    console.log("🚀 ~ Utility ~ calculateClientRect ~ rect:", rect)
     rect.width = 250;
     rect.height = 250;
     return rect;

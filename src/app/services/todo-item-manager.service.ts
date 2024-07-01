@@ -20,13 +20,11 @@ export class TodoItemManagerService {
   }
 
   addTodoItem(newItem: ToDoItem){
-    // this.todoItemList.next([ ...this.todoItemList.value ,  newItem]);
     this.toDoItems.push(newItem);
   }
 
   createTodoItem(title: string, body: string){
     let newItem = new ToDoItem(title, body);
-    // this.todoItemList.push(newItem);
     this.addTodoItem(newItem)
   }
 

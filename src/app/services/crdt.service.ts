@@ -24,9 +24,7 @@ export class CRDTService {
   loadTodoDoc() {
     // Getting contents of array from doc created.
     this.yarray = this.ydoc.getArray("TodoDoc");
-    console.log("🚀 ~ CRDTService ~ loadTodoDoc ~ array:", this.yarray.toArray());
     this.syncArrayWithYArray();
-    // this.array = this.yarray.toArray().map((doc: string)=> JSON.parse(doc))
   }
 
   setupWebsocketConnection() {
@@ -41,14 +39,11 @@ export class CRDTService {
   observeChanges() {
     if (this.yarray) {
       this.yarray?.observe((event) => {
-        console.log("🚀 ~ CRDTService ~ this.yarray?.observe ~ event:", event);
-        console.log("🚀 ~ CRDTService ~ this.yarray?.observe ~ event:", this.yarray?.toArray());
         this.syncArrayWithYArray();
       });
     }
 
     this.ydoc.on("update", (update) => {
-      // console.log("🚀 ~ CRDTService ~ this.ydoc.on ~ update:", update)
       Y.applyUpdate(this.ydoc, update);
     });
   }
@@ -58,15 +53,10 @@ export class CRDTService {
     let array = [];
     array.push(Utility.stringify(newItem));
     this.yarray?.insert(this.yarray.length, array);
-    console.log("🚀 ~ CRDTService ~ insert ~ yarray:", this.yarray?.toArray());
     this.syncArrayWithYArray();
-    // this.loadTodoDoc();
-    // this.observeChanges();
   }
 
   delete(index: number) {
-    // let array = [];
-    // array.push(Utility.stringify(newItem));
     this.yarray?.delete(index, 1);
     this.syncArrayWithYArray();
   }
@@ -79,7 +69,6 @@ export class CRDTService {
     } else {
       this.websocketProvider?.connect();
       this.textContent = "Disconnect";
-      // this.updateArray();
     }
   }
 
@@ -94,12 +83,10 @@ export class CRDTService {
       for (let i = 0; i < (this.yarray ?? []).length; i++) {
         if (this.yarray?.get(i)) {
           tmpArray.push(JSON.parse(this.yarray?.get(i)) as ToDoItem)
-          console.log("🚀 ~ CRDTService ~ loadTodoDoc ~ array:", this.array)
         }
       }
       this.array = tmpArray;
     } else {
-      console.log("🚀 ~ deleeeeeeeeeeeeeeeeeeeeeeeete", this.array)
       this.array = [];
     }
   }

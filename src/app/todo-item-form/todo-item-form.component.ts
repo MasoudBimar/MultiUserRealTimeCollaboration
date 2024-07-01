@@ -36,8 +36,6 @@ export class TodoItemFormComponent implements OnInit {
   }
 
   addToDoItem() {
-  console.log("🚀 ~ TodoItemFormComponent ~ addToDoItem ~ a:")
-
     this.dialogRef.close(this.form?.value);
   }
 }

@@ -81,6 +81,7 @@ export class AppComponent {
   }
 
   delete(idx: number){
+    console.log("🚀 ~ AppComponent ~ delete ~ idx:", idx)
     this.crdtService.delete(idx);
   }
 

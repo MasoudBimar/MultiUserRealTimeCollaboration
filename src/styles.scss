@@ -10,3 +10,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .error-snackbar{
   --mdc-snackbar-container-color:#c93945;
 }
+
+.remove.icon {
+  color: red;
+  position: absolute;
+  margin-left: 4px;
+  margin-top: 10px;
+  background-color: #000;
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 2px;
+    background-color: #000;
+    background-color: currentColor;
+  }
+
+  &:before{
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  &:after{
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+  }
+}
