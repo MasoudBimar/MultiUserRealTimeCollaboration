@@ -9,7 +9,7 @@ import { Utility } from '../utility/utility';
 export class CRDTService<T> {
   array: CustomizableModel<T>[] = [];
   ydoc = new Y.Doc();
-  yarray?: Y.Array<string>;
+  ymap?:  Y.Map<any>;
   websocketProvider?: WebsocketProvider;
   textContent = "Disconnect"
 
@@ -22,9 +22,8 @@ export class CRDTService<T> {
   }
 
   loadTodoDoc() {
-    // Getting contents of array from doc created.
-    this.yarray = this.ydoc.getArray("TodoDoc");
-    this.syncArrayWithYArray();
+    this.ymap = this.ydoc.getMap("TodoDoc");
+    // this.syncArrayWithYArray();
   }
 
   setupWebsocketConnection() {
@@ -37,8 +36,8 @@ export class CRDTService<T> {
 
   // Function for observing changes in Array
   observeChanges() {
-    if (this.yarray) {
-      this.yarray?.observe((event) => {
+    if (this.ymap) {
+      this.ymap?.observe((event) => {
         this.syncArrayWithYArray();
       });
     }
@@ -50,14 +49,13 @@ export class CRDTService<T> {
 
   // Function for inserting Data into array
   insert<T>(newItem: CustomizableModel<T>) {
-    let array = [];
-    array.push(Utility.stringify(newItem));
-    this.yarray?.insert(this.yarray.length, array);
+    this.ymap?.set(newItem.id, Utility.stringify(newItem));
+    console.log(this.ymap?.toJSON())
     this.syncArrayWithYArray();
   }
 
-  delete(index: number) {
-    this.yarray?.delete(index, 1);
+  delete(index: string) {
+    this.ymap?.delete(index);
     // this.syncArrayWithYArray();
   }
 
@@ -73,44 +71,26 @@ export class CRDTService<T> {
   }
 
   clear() {
-    this.yarray?.delete(0, this.yarray.length);
+    this.ymap?.clear();
     // this.syncArrayWithYArray();
   }
 
   syncArrayWithYArray() {
-    if (this.yarray) {
+    if (this.ymap) {
       let tmpArray: CustomizableModel<T>[]=[];
-      for (let i = 0; i < (this.yarray ?? []).length; i++) {
-        if (this.yarray?.get(i)) {
-          tmpArray.push(JSON.parse(this.yarray?.get(i)) as CustomizableModel<T>)
-        }
+      let jsn = this.ymap?.toJSON();
+      if (jsn) {
+        this.array =Object.values(jsn).map(x => JSON.parse(x));
       }
-      this.array = tmpArray;
     } else {
       this.array = [];
     }
   }
 
-  updateItem(index: number, model: DomRectModel) {
-    this.ydoc.transact(() => {
-      if (this.yarray) {
-        let deletedItem: CustomizableModel<T> = JSON.parse(this.yarray.get(index));
-        deletedItem.domRect = model;
-        this.yarray?.delete(index, 1);
-        this.insert(deletedItem);
-      }
-    })
+  updateItem(id: string, model: DomRectModel) {
+    let prevItem = JSON.parse(this.ymap?.get(id));
+    prevItem.domRect = model;
+    this.ymap?.set(id, JSON.stringify(prevItem));
+
   }
-
-  // updateItem(index: number, model: DomRectModel) {
-  //   this.ydoc.transact(() => {
-  //     if (this.yarray) {
-  //       let deletedItem: CustomizableModel<T> = JSON.parse(this.yarray.get(index));
-  //       deletedItem.domRect = model;
-  //       this.yarray?.delete(index, 1);
-  //       this.insert(deletedItem);
-  //     }
-  //   })
-  // }
-
 }

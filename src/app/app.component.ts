@@ -26,11 +26,11 @@ export class AppComponent {
   itemDropped$: Subject<any> = new Subject<any>();
   constructor(public dialog: MatDialog,public snackBarService: SnackBarService, public crdtService: CRDTService<MetaData>) {
     this.itemResized$.pipe( debounce(i => interval(100))).subscribe((event:any) => {
-      this.crdtService.updateItem(event.index, event.domRect );
+      this.crdtService.updateItem(event.id, event.domRect );
     });
 
     this.itemDropped$.subscribe((event: any) => {
-        this.crdtService.updateItem(event.index, event.event );
+        this.crdtService.updateItem(event.id, event.event );
     });
   }
 
@@ -58,7 +58,7 @@ export class AppComponent {
     this.crdtService.clear();
   }
 
-  deleteItem(idx: number){
+  deleteItem(idx: string){
     this.crdtService.delete(idx);
   }
 

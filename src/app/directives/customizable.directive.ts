@@ -109,15 +109,6 @@ export class CustomizableDirective<T> implements AfterViewInit {
     this.mouseY = e.clientY;
   }
 
-  myFunc(updatedSize: any) {
-    updatedSize.x = updatedSize.left;
-    updatedSize.y = updatedSize.top;
-    if (this.domRect) {
-      this.domRect = { ...updatedSize };
-    }
-    this.setPositionAndDimension();
-  }
-
   @HostListener('window:mousemove', ['$event'])
   resizeDiv(e: any) {
     if (this.isResizing) {
@@ -127,13 +118,19 @@ export class CustomizableDirective<T> implements AfterViewInit {
         if (this.start === 'top') {
           let dist = e.clientY - this.mouseY;
           let updatedSize = { ... this.previousSize, height: this.previousSize.height - dist, top: this.previousSize.top + dist } as DOMRect;
-          this.myFunc(updatedSize);
+          updatedSize.x = updatedSize.left;
+          updatedSize.y = updatedSize.top;
+          this.domRect = { ...updatedSize };
+          this.setPositionAndDimension();
           this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         } else {
           let dist = e.clientY - this.mouseY;
           let updatedSize = { ... this.previousSize, height: this.previousSize.height + dist, bottom: this.previousSize.bottom + dist } as DOMRect;
-          this.myFunc(updatedSize);
+          updatedSize.x = updatedSize.left;
+          updatedSize.y = updatedSize.top;
+          this.domRect = { ...updatedSize };
+          this.setPositionAndDimension();
           this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         }
@@ -145,16 +142,13 @@ export class CustomizableDirective<T> implements AfterViewInit {
             top: this.previousSize.top,
             height: this.previousSize.height,
             right: this.previousSize.right,
-            left:
-              this.previousSize.left + dist > 0
-                ? this.previousSize.left + dist
-                : this.previousSize.left,
-            width:
-              this.previousSize.left + dist > 0
-                ? this.previousSize.width - dist
-                : this.previousSize.width,
+            left: this.previousSize.left + dist > 0 ? this.previousSize.left + dist : this.previousSize.left,
+            width: this.previousSize.left + dist > 0 ? this.previousSize.width - dist : this.previousSize.width,
           } as DOMRect;
-          this.myFunc(updatedSize);
+          updatedSize.x = updatedSize.left;
+          updatedSize.y = updatedSize.top;
+          this.domRect = { ...updatedSize };
+          this.setPositionAndDimension();
           this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         } else {
@@ -166,7 +160,10 @@ export class CustomizableDirective<T> implements AfterViewInit {
             right: this.previousSize.right + dist,
             width: this.previousSize.width + dist,
           } as DOMRect;
-          this.myFunc(updatedSize);
+          updatedSize.x = updatedSize.left;
+          updatedSize.y = updatedSize.top;
+          this.domRect = { ...updatedSize };
+          this.setPositionAndDimension();
           this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         }

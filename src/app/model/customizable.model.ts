@@ -1,6 +1,6 @@
 import { Utility } from "../utility/utility";
 export class CustomizableModel<T> {
-  id?: string;
+  id: string;
   domRect?: DomRectModel;
   metaData?: MetaData;
   itemType: 'input' | 'button' = 'input';
