@@ -1,22 +1,23 @@
 <div class="toolbar">
-  <button mat-button (click)="addToDoItem()">Add New ToDo</button>
+  <button mat-button (click)="addNewElement()">Add New ToDo</button>
   <button mat-button (click)="connect()">{{this.crdtService.textContent}}</button>
   <button mat-button (click)="clearBorad()">clear borad</button>
 </div>
 <div class="todo-boundary">
   <ng-container *ngFor="let item of crdtService.array; let idx = index">
-    <mat-form-field
-                    customizable
-                    [domRect]="item.domRect"
-                    (resizeEnd)="itemResized$.next({ domRect: $event, index: idx})"
-                    cdkDragBoundary="todo-boundary"
-                    class="example-box"
-                    (itemDropped)="itemDropped$.next({event: $event, index: idx})"
-                    (itemRemoved)="deleteItem(idx)">
-      <mat-label>Input</mat-label>
-      <input matInput [(ngModel)]="item.metaData">
+    <mat-form-field customizable [domRect]="item.domRect" (resizeEnd)="itemResized$.next({ domRect: $event, index: idx})"
+      cdkDragBoundary="todo-boundary" class="example-box" (itemDropped)="itemDropped$.next({event: $event, index: idx})"
+      (itemRemoved)="deleteItem(idx)" *ngIf="item.itemType === 'input'">
+      <mat-label>{{item.metaData?.label}}</mat-label>
+      <input matInput [ngModel]="item.metaData?.value" (ngModelChange)="updateDataModel({event: $event, index:idx})">
     </mat-form-field>
+
+    <div customizable [domRect]="item.domRect" (resizeEnd)="itemResized$.next({ domRect: $event, index: idx})"
+      cdkDragBoundary=".todo-boundary" class="example-box" (itemDropped)="itemDropped$.next({event: $event, index: idx})"
+      (itemRemoved)="deleteItem(idx)" *ngIf="item.itemType === 'button'">
+      <button  mat-flat-button> button </button>
+    </div>
+
 
   </ng-container>
 </div>
-<!-- [model]="item.metaData" -->

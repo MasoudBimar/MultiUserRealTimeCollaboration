@@ -1,25 +1,31 @@
 import { Utility } from "../utility/utility";
-export class CustomizableModel<T>{
+export class CustomizableModel<T> {
   id?: string;
   domRect?: DomRectModel;
-  metaData?: T;
+  metaData?: MetaData;
+  itemType: 'input' | 'button' = 'input';
 
   constructor() {
-    this.domRect = new DomRectModel(0, 0, 250, 250);
+    if (this.itemType === 'input') {
+      this.domRect = new DomRectModel(0, 0, 300, 100);
+    } else if(this.itemType === 'button') {
+      this.domRect = new DomRectModel(0, 0, 100, 50);
+    }
     this.id = Utility.uuidv4();
   }
 }
 
-export class ToDoItem {
+export class MetaData {
 
-  title: string = 'untitled';
-  body: string = 'nobody';
-  status: 'todo' | 'doing' | 'done' = 'todo';
+  label: string ;
+  body: string;
+  // status: 'todo' | 'doing' | 'done' = 'todo';
+  value: any;
 
 
-  constructor(title: string, body: string) {
+  constructor(label: string = 'untitled', body: string = 'nobody') {
     this.body = body;
-    this.title = title;
+    this.label = label;
   }
 }
 

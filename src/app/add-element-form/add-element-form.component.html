@@ -7,22 +7,29 @@
 <mat-dialog-content *ngIf="form">
   <form [formGroup]="form">
     <mat-form-field>
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title">
-      <mat-error *ngIf="!form.get('title')?.valid && form.get('title')?.touched" class="text-danger">
-        *Please add ToDo Title
+      <mat-label>Label</mat-label>
+      <input matInput formControlName="label">
+      <mat-error *ngIf="!form.get('label')?.valid && form.get('label')?.touched" class="text-danger">
+        *Item is required
       </mat-error>
     </mat-form-field>
-    <mat-form-field>
+    <!-- <mat-form-field>
       <mat-label>Body</mat-label>
       <input matInput formControlName="body">
       <mat-error *ngIf="!form.get('body')?.valid && form.get('body')?.touched" class="text-danger">
-        *Please add ToDo Description
+        *Item is required
       </mat-error>
+    </mat-form-field> -->
+    <mat-form-field>
+      <mat-label>Element Type</mat-label>
+      <mat-select formControlName="itemType">
+        <mat-option value="input">Input Element</mat-option>
+        <mat-option value="button">Button Element</mat-option>
+      </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button mat-dialog-close type="button">Close</button>
-  <button mat-button type="button" [disabled]="!form?.valid" (click)="addToDoItem()">Save changes</button>
+  <button mat-button type="button" [disabled]="!form?.valid" (click)="addElementItem()">Save changes</button>
 </mat-dialog-actions>

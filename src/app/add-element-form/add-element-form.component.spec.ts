@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AddElementFormComponent } from './add-element-form.component';
 
-import { TodoItemFormComponent } from './todo-item-form.component';
-
-describe('TodoItemFormComponent', () => {
-  let component: TodoItemFormComponent;
-  let fixture: ComponentFixture<TodoItemFormComponent>;
+describe('AddElementFormComponent', () => {
+  let component: AddElementFormComponent;
+  let fixture: ComponentFixture<AddElementFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TodoItemFormComponent]
+      imports: [AddElementFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TodoItemFormComponent);
+    fixture = TestBed.createComponent(AddElementFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

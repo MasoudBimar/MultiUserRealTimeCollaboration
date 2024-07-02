@@ -39,8 +39,6 @@ export class CustomizableDirective<T> implements AfterViewInit {
   prevDistance: number = 0;
   MIN_SIZE = 20;
   @Input() domRect?: DomRectModel;
-  // @Input() identifier?: string;
-  // sizeUpdated = new EventEmitter<DOMRect>();
   @Output('resizeEnd') sizeUpdated: EventEmitter<any> = new EventEmitter<any>();
   @Output() itemDropped: EventEmitter<any> = new EventEmitter<any>();
   @Output() itemResized: EventEmitter<any> = new EventEmitter<any>();
@@ -55,7 +53,6 @@ export class CustomizableDirective<T> implements AfterViewInit {
 
   @HostListener('cdkDragEnded', ['$event'])
   onDragEnded(ev: any) {
-      console.log("🚀 ~ CustomizableDirective<T> ~ onDragEnded ~ ev:",this.domRect, ev)
       if (this.domRect && ev.dropPoint) {
         let newX = this.domRect.x + ev.distance.x;
         let newY = this.domRect.y + ev.distance.y;
@@ -84,7 +81,6 @@ export class CustomizableDirective<T> implements AfterViewInit {
   @HostListener('mouseenter', ['$event'])
   onMouseOver(ev: MouseEvent) {
     ev.stopPropagation();
-    // this.previousSize = this.ele.nativeElement.getBoundingClientRect();
     this.customizers.push(this.createResizers(CursorTypeEnum.SIDE, MovingDirectionEnum.HORIZONTAL, ResizingDirectionEnum.RIGHT));
     this.customizers.push(this.createResizers(CursorTypeEnum.UPDOWN, MovingDirectionEnum.VERTICAL, ResizingDirectionEnum.BOTTOM));
     this.customizers.push(this.createResizers(CursorTypeEnum.SIDE, MovingDirectionEnum.HORIZONTAL, ResizingDirectionEnum.LEFT));
@@ -136,7 +132,6 @@ export class CustomizableDirective<T> implements AfterViewInit {
   }
 
   myFunc(updatedSize: any) {
-    console.log("🚀 ~ CustomizableDirective ~ myFunc ~ updatedSize:", updatedSize)
     updatedSize.x = updatedSize.left;
     updatedSize.y = updatedSize.top;
     if (this.domRect) {
@@ -245,7 +240,6 @@ export class CustomizableDirective<T> implements AfterViewInit {
     this.renderer.addClass(removeIconElement, 'remove');
     this.renderer.addClass(removeIconElement, 'icon');
     this.renderer.listen(removeIconElement, 'click', (event: any) => {
-      console.log("🚀 ~ CustomizableDirective ~ this.renderer.listen ~ event:", event);
       this.itemRemoved.emit({});
     });
     this.renderer.appendChild(removeHandlerElement, removeIconElement);

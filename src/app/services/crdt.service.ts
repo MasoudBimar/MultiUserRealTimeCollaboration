@@ -39,7 +39,6 @@ export class CRDTService<T> {
   observeChanges() {
     if (this.yarray) {
       this.yarray?.observe((event) => {
-        console.log("🚀 ~ CRDTService<T> ~ this.yarray?.observe ~ event:", event)
         this.syncArrayWithYArray();
       });
     }
@@ -102,5 +101,16 @@ export class CRDTService<T> {
       }
     })
   }
+
+  // updateItem(index: number, model: DomRectModel) {
+  //   this.ydoc.transact(() => {
+  //     if (this.yarray) {
+  //       let deletedItem: CustomizableModel<T> = JSON.parse(this.yarray.get(index));
+  //       deletedItem.domRect = model;
+  //       this.yarray?.delete(index, 1);
+  //       this.insert(deletedItem);
+  //     }
+  //   })
+  // }
 
 }
