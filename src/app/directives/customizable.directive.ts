@@ -1,21 +1,18 @@
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { DOCUMENT } from '@angular/common';
 import {
+  AfterViewInit,
   Directive,
   ElementRef,
-  AfterViewInit,
-  HostListener,
-  Output,
   EventEmitter,
+  HostListener,
   Inject,
-  Renderer2,
   Input,
+  Output,
+  Renderer2,
   SimpleChanges,
 } from '@angular/core';
-import { CustomizableModel, DomRectModel } from '../model/customizable.model';
-import { MovingDirectionEnum } from '../enums/moving-direction.enum';
-import { ResizingDirectionEnum } from '../enums/resizing-direction.enum';
-import { CursorTypeEnum } from '../enums/cursor-type.enum';
+import { DomRectModel } from '../model/customizable.model';
 @Directive({
   selector: '[customizable]',
   standalone: true,
@@ -32,8 +29,8 @@ export class CustomizableDirective<T> implements AfterViewInit {
   } = { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0 };
   customizers: ElementRef<HTMLElement>[] = [];
   isResizing: boolean = false;
-  move!: MovingDirectionEnum;
-  start!: ResizingDirectionEnum;
+  move!: 'vertical'| 'horizontal';
+  start!: 'top' | 'bottom' | 'left' | 'right';
   mouseX!: number;
   mouseY!: number;
   prevDistance: number = 0;
@@ -81,40 +78,21 @@ export class CustomizableDirective<T> implements AfterViewInit {
   @HostListener('mouseenter', ['$event'])
   onMouseOver(ev: MouseEvent) {
     ev.stopPropagation();
-    this.customizers.push(this.createResizers(CursorTypeEnum.SIDE, MovingDirectionEnum.HORIZONTAL, ResizingDirectionEnum.RIGHT));
-    this.customizers.push(this.createResizers(CursorTypeEnum.UPDOWN, MovingDirectionEnum.VERTICAL, ResizingDirectionEnum.BOTTOM));
-    this.customizers.push(this.createResizers(CursorTypeEnum.SIDE, MovingDirectionEnum.HORIZONTAL, ResizingDirectionEnum.LEFT));
-    this.customizers.push(this.createResizers(CursorTypeEnum.UPDOWN, MovingDirectionEnum.VERTICAL, ResizingDirectionEnum.TOP));
+    this.customizers.push(this.createResizers('ew-resize','horizontal', 'right'));
+    this.customizers.push(this.createResizers('ns-resize', 'vertical', 'bottom'));
+    this.customizers.push(this.createResizers('ew-resize', 'horizontal', 'left'));
+    this.customizers.push(this.createResizers('ns-resize', 'vertical', 'top'));
     this.addRemoveHandler();
     this.customizers.forEach((single) => {
       this.renderer.appendChild(this.elementRef.nativeElement, single.nativeElement);
     });
   }
 
-  createResizers(cursor: CursorTypeEnum, move: MovingDirectionEnum, start: ResizingDirectionEnum) {
+  createResizers(cursor: 'ew-resize'|'ns-resize', move: 'vertical'| 'horizontal', start: 'top' | 'bottom' | 'left' | 'right') {
     let resizerElement = this.renderer.createElement('div');
-    this.renderer.setStyle(resizerElement, 'position', 'absolute');
-    if (cursor === CursorTypeEnum.SIDE && start === ResizingDirectionEnum.RIGHT) {
-      this.renderer.setStyle(resizerElement, 'top', '50%');
-      this.renderer.setStyle(resizerElement, 'left', '100%');
-    } else if (cursor === CursorTypeEnum.UPDOWN && start === ResizingDirectionEnum.BOTTOM) {
-      this.renderer.setStyle(resizerElement, 'top', '100%');
-      this.renderer.setStyle(resizerElement, 'left', '50%');
-
-    } else if (cursor === CursorTypeEnum.SIDE && start === ResizingDirectionEnum.LEFT) {
-      this.renderer.setStyle(resizerElement, 'top', '50%');
-      this.renderer.setStyle(resizerElement, 'left', '0');
-
-    } else if (cursor === CursorTypeEnum.UPDOWN && start === ResizingDirectionEnum.TOP) {
-      this.renderer.setStyle(resizerElement, 'top', '0');
-      this.renderer.setStyle(resizerElement, 'left', '50%');
-
-    }
-    this.renderer.setStyle(resizerElement, 'cursor', cursor);
-    this.renderer.setStyle(resizerElement, 'width', '15px');
-    this.renderer.setStyle(resizerElement, 'height', '15px');
-    this.renderer.setStyle(resizerElement, 'background', 'red');
-    this.renderer.setStyle(resizerElement, 'transform', 'translate(-50%,-50%)');
+    this.renderer.addClass(resizerElement, 'resize-control');
+    this.renderer.addClass(resizerElement, cursor);
+    this.renderer.addClass(resizerElement, start);
     this.renderer.listen(resizerElement, 'mousedown', (e: MouseEvent) => {
       e.stopPropagation();
       this.setResizePositions(e, move, start);
@@ -123,7 +101,7 @@ export class CustomizableDirective<T> implements AfterViewInit {
     return new ElementRef(resizerElement);
   }
 
-  setResizePositions(e: MouseEvent, move: MovingDirectionEnum, start: ResizingDirectionEnum) {
+  setResizePositions(e: MouseEvent, move: 'vertical'| 'horizontal', start: 'top' | 'bottom' | 'left' | 'right') {
     this.move = move;
     this.start = start;
     this.isResizing = true;
@@ -145,8 +123,8 @@ export class CustomizableDirective<T> implements AfterViewInit {
     if (this.isResizing) {
       e.stopPropagation();
       this.setPreviousState();
-      if (this.move === MovingDirectionEnum.VERTICAL) {
-        if (this.start === ResizingDirectionEnum.TOP) {
+      if (this.move === 'vertical') {
+        if (this.start === 'top') {
           let dist = e.clientY - this.mouseY;
           let updatedSize = { ... this.previousSize, height: this.previousSize.height - dist, top: this.previousSize.top + dist } as DOMRect;
           this.myFunc(updatedSize);
@@ -161,7 +139,7 @@ export class CustomizableDirective<T> implements AfterViewInit {
         }
       } else {
         let dist = e.clientX - this.mouseX;
-        if (this.start === ResizingDirectionEnum.LEFT) {
+        if (this.start === 'left') {
           let updatedSize = {
             bottom: this.previousSize.bottom,
             top: this.previousSize.top,

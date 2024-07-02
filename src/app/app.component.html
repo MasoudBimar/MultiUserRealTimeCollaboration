@@ -9,7 +9,7 @@
       cdkDragBoundary="todo-boundary" class="example-box" (itemDropped)="itemDropped$.next({event: $event, index: idx})"
       (itemRemoved)="deleteItem(idx)" *ngIf="item.itemType === 'input'">
       <mat-label>{{item.metaData?.label}}</mat-label>
-      <input matInput [ngModel]="item.metaData?.value" (ngModelChange)="updateDataModel({event: $event, index:idx})">
+      <input readonly="true" matInput [ngModel]="item.metaData?.value" (ngModelChange)="updateDataModel({event: $event, index:idx})">
     </mat-form-field>
 
     <div customizable [domRect]="item.domRect" (resizeEnd)="itemResized$.next({ domRect: $event, index: idx})"

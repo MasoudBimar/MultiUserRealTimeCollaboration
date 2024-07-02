@@ -1,14 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-.success-snackbar{
-  --mdc-snackbar-container-color:#253a09;
+html,
+body {
+  height: 100%;
 }
 
-.error-snackbar{
-  --mdc-snackbar-container-color:#c93945;
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.success-snackbar {
+  --mdc-snackbar-container-color: #253a09;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #c93945;
 }
 
 .remove.icon {
@@ -17,7 +24,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-left: 4px;
   margin-top: 10px;
   background-color: #000;
-  &:before, &:after {
+
+  &:before,
+  &:after {
     content: '';
     position: absolute;
     width: 15px;
@@ -26,12 +35,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background-color: currentColor;
   }
 
-  &:before{
+  &:before {
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
   }
 
-  &:after{
+  &:after {
     -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
   }
@@ -46,7 +55,46 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  &:hover{
+
+  &:hover {
     background-color: #d8cccc;
   }
+}
+
+
+
+.resize-control {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-sizing: border-box;
+  background: #4af;
+  border: 2px solid #fff;
+  z-index: 10;
+  position: absolute;
+  transform: translate(-50%,-50%);
+}
+.ew-resize.right {
+  top: 50%;
+  left: 100%;
+  cursor: ew-resize;
+}
+
+.ew-resize.left {
+  top: 50%;
+  left: 0;
+  cursor: ew-resize;
+}
+
+.ns-resize.bottom {
+  top: 100%;
+  left: 50%;
+  cursor: ns-resize;
+}
+
+.ns-resize.top {
+  top: 0;
+  left: 50%;
+  cursor: ns-resize;
 }
