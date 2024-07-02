@@ -12,17 +12,16 @@ import {
   Input,
   SimpleChanges,
 } from '@angular/core';
-import { DomRectModel } from '../model/card.model';
+import { CustomizableModel, DomRectModel } from '../model/customizable.model';
 import { MovingDirectionEnum } from '../enums/moving-direction.enum';
 import { ResizingDirectionEnum } from '../enums/resizing-direction.enum';
 import { CursorTypeEnum } from '../enums/cursor-type.enum';
-
 @Directive({
   selector: '[customizable]',
   standalone: true,
   hostDirectives: [{ directive: CdkDrag, inputs: ['cdkDragBoundary'], outputs: ['cdkDragEnded'] }],
 })
-export class CustomizableDirective implements AfterViewInit {
+export class CustomizableDirective<T> implements AfterViewInit {
   previousSize: {
     left: number;
     top: number;
@@ -40,8 +39,9 @@ export class CustomizableDirective implements AfterViewInit {
   prevDistance: number = 0;
   MIN_SIZE = 20;
   @Input() domRect?: DomRectModel;
-  @Input() identifier?: string;
-  @Output('resizeEnd') sizeUpdated = new EventEmitter<DOMRect>();
+  // @Input() identifier?: string;
+  // sizeUpdated = new EventEmitter<DOMRect>();
+  @Output('resizeEnd') sizeUpdated: EventEmitter<any> = new EventEmitter<any>();
   @Output() itemDropped: EventEmitter<any> = new EventEmitter<any>();
   @Output() itemResized: EventEmitter<any> = new EventEmitter<any>();
   @Output() itemRemoved: EventEmitter<any> = new EventEmitter<any>();
@@ -50,6 +50,20 @@ export class CustomizableDirective implements AfterViewInit {
     @Inject(DOCUMENT) private _document: Document,
     private renderer: Renderer2
   ) {
+    // this.renderer.setStyle(this.elementRef.nativeElement, 'background-color','#' + Math.floor(Math.random() * 16777215).toString(16));
+  }
+
+  @HostListener('cdkDragEnded', ['$event'])
+  onDragEnded(ev: any) {
+      console.log("🚀 ~ CustomizableDirective<T> ~ onDragEnded ~ ev:",this.domRect, ev)
+      if (this.domRect && ev.dropPoint) {
+        let newX = this.domRect.x + ev.distance.x;
+        let newY = this.domRect.y + ev.distance.y;
+        this.domRect.x = this.domRect.left = newX;
+        this.domRect.y = this.domRect.top = newY;
+        this.itemDropped.emit(this.domRect);
+        this.setPositionAndDimension();
+      }
   }
 
   @HostListener('mouseleave', ['$event'])
@@ -67,7 +81,7 @@ export class CustomizableDirective implements AfterViewInit {
     this.isResizing = false;
   }
 
-  @HostListener('mouseover', ['$event'])
+  @HostListener('mouseenter', ['$event'])
   onMouseOver(ev: MouseEvent) {
     ev.stopPropagation();
     // this.previousSize = this.ele.nativeElement.getBoundingClientRect();
@@ -121,6 +135,16 @@ export class CustomizableDirective implements AfterViewInit {
     this.mouseY = e.clientY;
   }
 
+  myFunc(updatedSize: any) {
+    console.log("🚀 ~ CustomizableDirective ~ myFunc ~ updatedSize:", updatedSize)
+    updatedSize.x = updatedSize.left;
+    updatedSize.y = updatedSize.top;
+    if (this.domRect) {
+      this.domRect = { ...updatedSize };
+    }
+    this.setPositionAndDimension();
+  }
+
   @HostListener('window:mousemove', ['$event'])
   resizeDiv(e: any) {
     if (this.isResizing) {
@@ -130,12 +154,14 @@ export class CustomizableDirective implements AfterViewInit {
         if (this.start === ResizingDirectionEnum.TOP) {
           let dist = e.clientY - this.mouseY;
           let updatedSize = { ... this.previousSize, height: this.previousSize.height - dist, top: this.previousSize.top + dist } as DOMRect;
-          this.sizeUpdated.emit(updatedSize);
+          this.myFunc(updatedSize);
+          this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         } else {
           let dist = e.clientY - this.mouseY;
           let updatedSize = { ... this.previousSize, height: this.previousSize.height + dist, bottom: this.previousSize.bottom + dist } as DOMRect;
-          this.sizeUpdated.emit(updatedSize);
+          this.myFunc(updatedSize);
+          this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         }
       } else {
@@ -155,7 +181,8 @@ export class CustomizableDirective implements AfterViewInit {
                 ? this.previousSize.width - dist
                 : this.previousSize.width,
           } as DOMRect;
-          this.sizeUpdated.emit(updatedSize);
+          this.myFunc(updatedSize);
+          this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         } else {
           let updatedSize = {
@@ -166,7 +193,8 @@ export class CustomizableDirective implements AfterViewInit {
             right: this.previousSize.right + dist,
             width: this.previousSize.width + dist,
           } as DOMRect;
-          this.sizeUpdated.emit(updatedSize);
+          this.myFunc(updatedSize);
+          this.sizeUpdated.emit(this.domRect);
           this.setResizePositions(e, this.move, this.start);
         }
       }
@@ -177,8 +205,6 @@ export class CustomizableDirective implements AfterViewInit {
   ngAfterViewInit() {
     this.setPositionAndDimension();
     this.setPreviousState();
-
-
   }
 
   setPreviousState() {
@@ -204,22 +230,23 @@ export class CustomizableDirective implements AfterViewInit {
     return result;
   }
 
-  setPositionAndDimension(){
+  setPositionAndDimension() {
     if (this.domRect) {
       this.renderer.setStyle(this.elementRef.nativeElement, 'height', `${this.domRect.height}px`);
       this.renderer.setStyle(this.elementRef.nativeElement, 'width', `${this.domRect.width}px`);
-      this.renderer.setStyle(this.elementRef.nativeElement, 'transform','translate3d(' + this.domRect.left + 'px,' + this.domRect.top + 'px, 0px )');
+      this.renderer.setStyle(this.elementRef.nativeElement, 'transform', 'translate3d(' + this.domRect.left + 'px,' + this.domRect.top + 'px, 0px )');
     }
   }
 
-  addRemoveHandler(){
+  addRemoveHandler() {
     let removeHandlerElement = this.renderer.createElement('div');
-    this.renderer.addClass(removeHandlerElement,'remove-handler');
+    this.renderer.addClass(removeHandlerElement, 'remove-handler');
     let removeIconElement = this.renderer.createElement('div');
-    this.renderer.addClass(removeIconElement,'remove');
-    this.renderer.addClass(removeIconElement,'icon');
-    this.renderer.listen(removeIconElement, 'click', (event) => {
-      this.itemRemoved.emit();
+    this.renderer.addClass(removeIconElement, 'remove');
+    this.renderer.addClass(removeIconElement, 'icon');
+    this.renderer.listen(removeIconElement, 'click', (event: any) => {
+      console.log("🚀 ~ CustomizableDirective ~ this.renderer.listen ~ event:", event);
+      this.itemRemoved.emit({});
     });
     this.renderer.appendChild(removeHandlerElement, removeIconElement);
     this.renderer.appendChild(this.elementRef.nativeElement, removeHandlerElement);

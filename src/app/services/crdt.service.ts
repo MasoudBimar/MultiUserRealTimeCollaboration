@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
 import { IndexeddbPersistence } from 'y-indexeddb';
-import { ToDoItem } from '../model/card.model';
+import { WebsocketProvider } from "y-websocket";
+import * as Y from "yjs";
+import { CustomizableModel, DomRectModel } from '../model/customizable.model';
 import { Utility } from '../utility/utility';
 
 @Injectable({ providedIn: 'root' })
-export class CRDTService {
-  array: ToDoItem[] = [];
+export class CRDTService<T> {
+  array: CustomizableModel<T>[] = [];
   ydoc = new Y.Doc();
   yarray?: Y.Array<string>;
   websocketProvider?: WebsocketProvider;
@@ -30,7 +30,7 @@ export class CRDTService {
   setupWebsocketConnection() {
     // Creating a websocket connection between users for a particular doc.
     this.websocketProvider = new WebsocketProvider(
-      "ws://192.168.0.229:8080", '',
+      "ws://localhost:8080", '',
       this.ydoc
     );
   }
@@ -39,6 +39,7 @@ export class CRDTService {
   observeChanges() {
     if (this.yarray) {
       this.yarray?.observe((event) => {
+        console.log("🚀 ~ CRDTService<T> ~ this.yarray?.observe ~ event:", event)
         this.syncArrayWithYArray();
       });
     }
@@ -49,7 +50,7 @@ export class CRDTService {
   }
 
   // Function for inserting Data into array
-  insert(newItem: ToDoItem) {
+  insert<T>(newItem: CustomizableModel<T>) {
     let array = [];
     array.push(Utility.stringify(newItem));
     this.yarray?.insert(this.yarray.length, array);
@@ -58,7 +59,7 @@ export class CRDTService {
 
   delete(index: number) {
     this.yarray?.delete(index, 1);
-    this.syncArrayWithYArray();
+    // this.syncArrayWithYArray();
   }
 
   // Function for making connection between users.
@@ -74,15 +75,15 @@ export class CRDTService {
 
   clear() {
     this.yarray?.delete(0, this.yarray.length);
-    this.syncArrayWithYArray();
+    // this.syncArrayWithYArray();
   }
 
   syncArrayWithYArray() {
     if (this.yarray) {
-      let tmpArray = [];
+      let tmpArray: CustomizableModel<T>[]=[];
       for (let i = 0; i < (this.yarray ?? []).length; i++) {
         if (this.yarray?.get(i)) {
-          tmpArray.push(JSON.parse(this.yarray?.get(i)) as ToDoItem)
+          tmpArray.push(JSON.parse(this.yarray?.get(i)) as CustomizableModel<T>)
         }
       }
       this.array = tmpArray;
@@ -91,10 +92,14 @@ export class CRDTService {
     }
   }
 
-  updateItem(index: number, model: ToDoItem) {
+  updateItem(index: number, model: DomRectModel) {
     this.ydoc.transact(() => {
-      this.yarray?.delete(index, 1);
-      this.insert(model);
+      if (this.yarray) {
+        let deletedItem: CustomizableModel<T> = JSON.parse(this.yarray.get(index));
+        deletedItem.domRect = model;
+        this.yarray?.delete(index, 1);
+        this.insert(deletedItem);
+      }
     })
   }
 

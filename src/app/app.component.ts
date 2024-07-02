@@ -1,21 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { DragComponent } from './drag/drag.component';
-import { ToDoItem } from './model/card.model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { TodoItemFormComponent } from './todo-item-form/todo-item-form.component';
+import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { RouterOutlet } from '@angular/router';
+import { debounce, interval, Subject } from 'rxjs';
+import { CardComponent } from './card/card.component';
+import { CustomizableDirective } from './directives/customizable.directive';
+import { CustomizableModel, ToDoItem } from './model/customizable.model';
+import { CRDTService } from './services/crdt.service';
 import { SnackBarService } from './services/snackbar.service';
 import { TodoItemManagerService } from './services/todo-item-manager.service';
-import { CRDTService } from './services/crdt.service';
-import { Subject, debounce, interval } from 'rxjs';
+import { TodoItemFormComponent } from './todo-item-form/todo-item-form.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, DragComponent, CommonModule, MatButtonModule],
+  imports: [RouterOutlet,CustomizableDirective,MatInputModule, CommonModule, MatButtonModule, CardComponent, FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -25,14 +27,14 @@ export class AppComponent {
   itemResized$: Subject<any> = new Subject<any>();
   itemDropped$: Subject<any> = new Subject<any>();
   toDoItemList: ToDoItem[] = [];
-  constructor(public dialog: MatDialog,public snackBarService: SnackBarService, private todoItemManagerService: TodoItemManagerService,public crdtService: CRDTService) {
+  constructor(public dialog: MatDialog,public snackBarService: SnackBarService, private todoItemManagerService: TodoItemManagerService,public crdtService: CRDTService<ToDoItem>) {
     this.newToDoItemForm = this.creatTodoForm();
-    this.itemResized$.pipe( debounce(i => interval(100))).subscribe((event) => {
-      this.crdtService.updateItem(event.event.index, event.model );
+    this.itemResized$.pipe( debounce(i => interval(100))).subscribe((event:any) => {
+      this.crdtService.updateItem(event.index, event.domRect );
     });
 
-    this.itemDropped$.pipe( debounce(i => interval(100))).subscribe((event) => {
-      this.crdtService.updateItem(event.event.index, event.model );
+    this.itemDropped$.subscribe((event: any) => {
+        this.crdtService.updateItem(event.index, event.event );
     });
   }
   private creatTodoForm(): FormGroup<any> {
@@ -50,27 +52,15 @@ export class AppComponent {
 
     dialogRef.afterClosed().subscribe(response => {
       if (response) {
-          this.crdtService.insert(new ToDoItem(response.title, response.body));
+        let newItem = new CustomizableModel<ToDoItem>();
+        newItem.metaData= new ToDoItem( response.title, response.body);
+          this.crdtService.insert(newItem);
           this.snackBarService.openSuccess('ToDo Item Created', 'Ok');
       } else{
         this.snackBarService.openError('Operation Failed', 'Ok');
       }
     });
   }
-
-  // itemDropped(event: any, model: ToDoItem) { //CdkDragDrop<any>
-  //   console.log("🚀 ~ AppComponent ~ itemDropped ~ event:", event);
-  //   console.log(this.crdtService.array);
-  //   // this.crdtService.updateItem(event.index, model );
-  // }
-
-  // itemResizedHandler(event: any, model: ToDoItem) { //CdkDragDrop<any>
-  //   console.log("🚀 ~ AppComponent ~ itemDropped ~ event:", event);
-  //   console.log(this.crdtService.array);
-  //   setTimeout(() => {
-
-  //   }, 1000);
-  // }
 
   connect(){
     this.crdtService.connect();
@@ -80,18 +70,7 @@ export class AppComponent {
     this.crdtService.clear();
   }
 
-  delete(idx: number){
-    console.log("🚀 ~ AppComponent ~ delete ~ idx:", idx)
+  deleteItem(idx: number){
     this.crdtService.delete(idx);
   }
-
-  // get todoItems():ToDoItem[]{
-  //   console.log("🚀 ~ AppComponent ~ gettodoItems ~ array:", this.crdtService.yarray?.toArray())
-  //   if (this.crdtService.yarray) {
-  //     let array= this.crdtService.yarray.toArray();
-  //     return array.map(x=> JSON.parse(x));
-  //   } else {
-  //     return [];
-  //   }
-  // }
 }

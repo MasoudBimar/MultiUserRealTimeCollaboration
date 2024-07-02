@@ -2,7 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, filter } from 'rxjs';
-import { ToDoItem } from '../model/card.model';
+import { ToDoItem } from '../model/customizable.model';
 @Injectable({
   providedIn: 'root',
 })
