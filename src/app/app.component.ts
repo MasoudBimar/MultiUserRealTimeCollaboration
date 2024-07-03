@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { RouterOutlet } from '@angular/router';
-import { Subject, debounce, interval } from 'rxjs';
+import { Subject, debounce, interval, distinctUntilChanged } from 'rxjs';
 import { AddElementFormComponent } from './add-element-form/add-element-form.component';
 import { CardComponent } from './card/card.component';
 import { CustomizableDirective } from './directives/customizable.directive';
@@ -25,7 +25,7 @@ export class AppComponent {
   itemResized$: Subject<any> = new Subject<any>();
   itemDropped$: Subject<any> = new Subject<any>();
   constructor(public dialog: MatDialog,public snackBarService: SnackBarService, public crdtService: CRDTService<MetaData>) {
-    this.itemResized$.pipe( debounce(i => interval(100))).subscribe((event:any) => {
+    this.itemResized$.pipe(distinctUntilChanged(), debounce(i => interval(100)),).subscribe((event:any) => {
       this.crdtService.updateItem(event.id, event.domRect );
     });
 
