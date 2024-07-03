@@ -16,7 +16,7 @@
     <div customizable [domRect]="item.domRect" (resizeEnd)="itemResized$.next({ domRect: $event, id: item.id})"
       cdkDragBoundary=".todo-boundary" class="example-box" (itemDropped)="itemDropped$.next({event: $event, id: item.id})"
       (itemRemoved)="deleteItem(item.id)" *ngIf="item.itemType === 'button'">
-      <button  mat-flat-button> button </button>
+      <button  mat-flat-button> {{item.metaData?.label}} </button>
     </div>
 
 

@@ -19,17 +19,10 @@ import { DomRectModel } from '../model/customizable.model';
   hostDirectives: [{ directive: CdkDrag, inputs: ['cdkDragBoundary'], outputs: ['cdkDragEnded'] }],
 })
 export class CustomizableDirective<T> implements AfterViewInit {
-  previousSize: {
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-    right: number;
-    bottom: number;
-  } = { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0 };
+  previousSize: DomRectModel = { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, x: 0, y: 0 };
   customizers: ElementRef<HTMLElement>[] = [];
   isResizing: boolean = false;
-  move!: 'vertical'| 'horizontal';
+  move!: 'vertical' | 'horizontal';
   start!: 'top' | 'bottom' | 'left' | 'right';
   mouseX!: number;
   mouseY!: number;
@@ -50,14 +43,14 @@ export class CustomizableDirective<T> implements AfterViewInit {
 
   @HostListener('cdkDragEnded', ['$event'])
   onDragEnded(ev: any) {
-      if (this.domRect && ev.dropPoint) {
-        let newX = this.domRect.x + ev.distance.x;
-        let newY = this.domRect.y + ev.distance.y;
-        this.domRect.x = this.domRect.left = newX;
-        this.domRect.y = this.domRect.top = newY;
-        this.itemDropped.emit(this.domRect);
-        this.setPositionAndDimension();
-      }
+    if (this.domRect && ev.dropPoint) {
+      let newX = this.domRect.x + ev.distance.x;
+      let newY = this.domRect.y + ev.distance.y;
+      this.domRect.x = this.domRect.left = newX;
+      this.domRect.y = this.domRect.top = newY;
+      this.itemDropped.emit(this.domRect);
+      this.setPositionAndDimension();
+    }
   }
 
   @HostListener('mouseleave', ['$event'])
@@ -78,7 +71,7 @@ export class CustomizableDirective<T> implements AfterViewInit {
   @HostListener('mouseenter', ['$event'])
   onMouseOver(ev: MouseEvent) {
     ev.stopPropagation();
-    this.customizers.push(this.createResizers('ew-resize','horizontal', 'right'));
+    this.customizers.push(this.createResizers('ew-resize', 'horizontal', 'right'));
     this.customizers.push(this.createResizers('ns-resize', 'vertical', 'bottom'));
     this.customizers.push(this.createResizers('ew-resize', 'horizontal', 'left'));
     this.customizers.push(this.createResizers('ns-resize', 'vertical', 'top'));
@@ -88,7 +81,7 @@ export class CustomizableDirective<T> implements AfterViewInit {
     });
   }
 
-  createResizers(cursor: 'ew-resize'|'ns-resize', move: 'vertical'| 'horizontal', start: 'top' | 'bottom' | 'left' | 'right') {
+  createResizers(cursor: 'ew-resize' | 'ns-resize', move: 'vertical' | 'horizontal', start: 'top' | 'bottom' | 'left' | 'right') {
     let resizerElement = this.renderer.createElement('div');
     this.renderer.addClass(resizerElement, 'resize-control');
     this.renderer.addClass(resizerElement, cursor);
@@ -101,7 +94,7 @@ export class CustomizableDirective<T> implements AfterViewInit {
     return new ElementRef(resizerElement);
   }
 
-  setResizePositions(e: MouseEvent, move: 'vertical'| 'horizontal', start: 'top' | 'bottom' | 'left' | 'right') {
+  setResizePositions(e: MouseEvent, move: 'vertical' | 'horizontal', start: 'top' | 'bottom' | 'left' | 'right') {
     this.move = move;
     this.start = start;
     this.isResizing = true;
@@ -114,60 +107,25 @@ export class CustomizableDirective<T> implements AfterViewInit {
     if (this.isResizing) {
       e.stopPropagation();
       this.setPreviousState();
+      let updatedSize: DomRectModel = this.previousSize as DomRectModel;
+      let dist;
+      let dimension: 'height' | 'width';
       if (this.move === 'vertical') {
-        if (this.start === 'top') {
-          let dist = e.clientY - this.mouseY;
-          let updatedSize = { ... this.previousSize, height: this.previousSize.height - dist, top: this.previousSize.top + dist } as DOMRect;
-          updatedSize.x = updatedSize.left;
-          updatedSize.y = updatedSize.top;
-          this.domRect = { ...updatedSize };
-          this.setPositionAndDimension();
-          this.sizeUpdated.emit(this.domRect);
-          this.setResizePositions(e, this.move, this.start);
-        } else {
-          let dist = e.clientY - this.mouseY;
-          let updatedSize = { ... this.previousSize, height: this.previousSize.height + dist, bottom: this.previousSize.bottom + dist } as DOMRect;
-          updatedSize.x = updatedSize.left;
-          updatedSize.y = updatedSize.top;
-          this.domRect = { ...updatedSize };
-          this.setPositionAndDimension();
-          this.sizeUpdated.emit(this.domRect);
-          this.setResizePositions(e, this.move, this.start);
-        }
+        dist = e.clientY - this.mouseY;
+        dimension = 'height';
+
       } else {
-        let dist = e.clientX - this.mouseX;
-        if (this.start === 'left') {
-          let updatedSize = {
-            bottom: this.previousSize.bottom,
-            top: this.previousSize.top,
-            height: this.previousSize.height,
-            right: this.previousSize.right,
-            left: this.previousSize.left + dist > 0 ? this.previousSize.left + dist : this.previousSize.left,
-            width: this.previousSize.left + dist > 0 ? this.previousSize.width - dist : this.previousSize.width,
-          } as DOMRect;
-          updatedSize.x = updatedSize.left;
-          updatedSize.y = updatedSize.top;
-          this.domRect = { ...updatedSize };
-          this.setPositionAndDimension();
-          this.sizeUpdated.emit(this.domRect);
-          this.setResizePositions(e, this.move, this.start);
-        } else {
-          let updatedSize = {
-            bottom: this.previousSize.bottom,
-            top: this.previousSize.top,
-            height: this.previousSize.height,
-            left: this.previousSize.left,
-            right: this.previousSize.right + dist,
-            width: this.previousSize.width + dist,
-          } as DOMRect;
-          updatedSize.x = updatedSize.left;
-          updatedSize.y = updatedSize.top;
-          this.domRect = { ...updatedSize };
-          this.setPositionAndDimension();
-          this.sizeUpdated.emit(this.domRect);
-          this.setResizePositions(e, this.move, this.start);
-        }
+        dist = e.clientX - this.mouseX;
+        dimension = 'width';
       }
+      updatedSize[dimension] = (this.start === 'left' || this.start === 'top') ? this.previousSize[dimension] - dist : this.previousSize[dimension] + dist;
+      updatedSize[this.start] = this.previousSize[this.start] + dist;
+      updatedSize.x = updatedSize.left;
+      updatedSize.y = updatedSize.top;
+      this.domRect = { ...updatedSize };
+      this.setPositionAndDimension();
+      this.sizeUpdated.emit(this.domRect);
+      this.setResizePositions(e, this.move, this.start);
       this.setPreviousState();
     }
   }
