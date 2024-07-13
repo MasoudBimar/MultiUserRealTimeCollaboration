@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
+
+// https://rxjs-course.dev/course/subject-variants/websocket-subject/
 @Injectable({
   providedIn: 'root'
 })
@@ -25,14 +27,18 @@ export class WebSocketService<T> {
       closeObserver: this.close,
       binaryType: 'arraybuffer',
       deserializer: (val: MessageEvent<T>) => {
-        return  val.data as T;
+        return val.data as T;
       },
-      serializer:(val: T) => {
+      serializer: (val: T) => {
         return (val as Uint8Array).buffer;
       }
     });
-    this.close.pipe(tap(() => this.isConnected = false));
-    this.open.pipe(tap(() => this.isConnected = true));
+    this.close.subscribe(() => {
+      this.isConnected = false;
+    });
+    this.open.subscribe(() => {
+      this.isConnected = true;
+    });
     return newWebSocket;
   }
 
@@ -54,6 +60,7 @@ export class WebSocketService<T> {
 
   closeConnection() {
     this.webSocket$.complete();
+    // this.webSocket$.unsubscribe();
   }
 
   openConnection() {

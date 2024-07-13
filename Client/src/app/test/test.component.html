@@ -1,27 +1,27 @@
 <div class="toolbar">
-  <button mat-button (click)="toggleConnection()">Connection Status: {{crdtwsService.websocketService.isConnected? 'Connected' :
-    'Disconnected'}}</button>
+  <!-- <button mat-button (click)="toggleConnection()">Connection Status: {{crdtwsService.websocketService.isConnected? 'Connected' :
+    'Disconnected'}}</button> -->
   <button mat-button (click)="addNewElement()">Add New ToDo</button>
   <button mat-button (click)="clearBorad()">clear borad</button>
 </div>
 <div class="todo-boundary">
-  <ng-container *ngFor="let item of crdtwsService.array; let idx = index">
-    <mat-form-field appCustomizable cdkDragBoundary="todo-boundary" class="example-box" [domRect]="item.domRect"
-      (itemResized)="itemResized$.next({ domRect: $event, id: item.id})" (itemDropped)="itemDropped$.next({ domRect: $event, id: item.id})"
-      (itemRemoved)="deleteItem(item.id)" *ngIf="item.itemType === 'input'">
-      <mat-label>{{item.metaData?.label}}</mat-label>
-      <input readonly="true" matInput [ngModel]="item.metaData?.value">
+  <ng-container *ngFor="let item of crdtwsService.document | keyvalue; let idx = index">
+    <mat-form-field appCustomizable cdkDragBoundary="todo-boundary" class="example-box" [domRect]="item.value.domRect"
+      (itemResized)="itemResized$.next({ domRect: $event, id: item.key})" (itemDropped)="itemDropped$.next({ domRect: $event, id: item.key})"
+      (itemRemoved)="deleteItem(item.key)" *ngIf="item.value.itemType === 'input'">
+      <mat-label>{{item.value.metaData?.label}}</mat-label>
+      <input readonly="true" matInput [ngModel]="item.value.metaData?.value">
     </mat-form-field>
 
-    <div appCustomizable class="example-box" cdkDragBoundary=".todo-boundary" [domRect]="item.domRect"
-      (itemResized)="itemResized$.next({ domRect: $event, id: item.id})" (itemDropped)="itemDropped$.next({ domRect: $event, id: item.id})"
-      (itemRemoved)="deleteItem(item.id)" *ngIf="item.itemType === 'button'">
-      <button mat-flat-button> {{item.metaData?.label}} </button>
+    <div appCustomizable class="example-box" cdkDragBoundary=".todo-boundary" [domRect]="item.value.domRect"
+      (itemResized)="itemResized$.next({ domRect: $event, id: item.key})" (itemDropped)="itemDropped$.next({ domRect: $event, id: item.key})"
+      (itemRemoved)="deleteItem(item.key)" *ngIf="item.value.itemType === 'button'">
+      <button mat-flat-button> {{item.value.metaData?.label}} </button>
     </div>
 
-    <div appCustomizable class="example-box" cdkDragBoundary=".todo-boundary" [domRect]="item.domRect"
-      (itemResized)="itemResized$.next({ domRect: $event, id: item.id})" (itemDropped)="itemDropped$.next({ domRect: $event, id: item.id})"
-      (itemRemoved)="deleteItem(item.id)" *ngIf="item.itemType === 'select'">
+    <div appCustomizable class="example-box" cdkDragBoundary=".todo-boundary" [domRect]="item.value.domRect"
+      (itemResized)="itemResized$.next({ domRect: $event, id: item.key})" (itemDropped)="itemDropped$.next({ domRect: $event, id: item.key})"
+      (itemRemoved)="deleteItem(item.key)" *ngIf="item.value.itemType === 'select'">
       <select name="sel" id="sel">
         <option value="1"> item 1</option>
         <option value="2"> item 2</option>

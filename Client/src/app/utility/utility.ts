@@ -19,7 +19,13 @@ export class Utility {
         str += object.map(value => Utility.stringify(value)).join(',');
         str += ']';
         return str;
-      } else {
+      } else if (object instanceof Map) {
+        // let str = '{';
+        const str = JSON.stringify(Object.fromEntries(object));
+        // str += '}';
+        return str;
+      }
+      else {
         // Object
         let str = '{';
         const entries = Object.entries(object);
@@ -89,7 +95,7 @@ export class Utility {
   };
 
 
-  static decompressArrayBuffer = async (input: ArrayBuffer): Promise<Uint8Array> =>{
+  static decompressArrayBuffer = async (input: ArrayBuffer): Promise<Uint8Array> => {
     //create the stream
     const ds = new DecompressionStream("gzip");
     //create the writer
@@ -104,19 +110,38 @@ export class Utility {
     let totalSize = 0;
     //go through each chunk and add it to the output
     while (true) {
-     const { value, done } = await reader.read();
-     if (done) break;
-     output.push(value);
-     totalSize += value.byteLength;
+      const { value, done } = await reader.read();
+      if (done) break;
+      output.push(value);
+      totalSize += value.byteLength;
     }
     const concatenated = new Uint8Array(totalSize);
     let offset = 0;
     //finally build the compressed array and return it
     for (const array of output) {
-     concatenated.set(array, offset);
-     offset += array.byteLength;
+      concatenated.set(array, offset);
+      offset += array.byteLength;
     }
     return concatenated;
-   }
+  }
+
+  static replacer(key: string, value: unknown) {
+    if (value instanceof Map) {
+      return {
+        dataType: 'Map',
+        value: Array.from(value.entries()), // or with spread: value: [...value]
+      };
+    } else {
+      return value;
+    }
+  }
+  static reviver(key: string, value: any) {
+    if (typeof value === 'object' && value !== null) {
+      if (value.dataType === 'Map') {
+        return new Map(value.value);
+      }
+    }
+    return value;
+  }
 
 }

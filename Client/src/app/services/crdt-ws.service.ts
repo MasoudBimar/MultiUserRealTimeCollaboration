@@ -177,4 +177,9 @@ export class CRDTWSService<T extends { id: string, domRect?: DomRectModel }> {
   close(){
     this.websocketService.closeConnection();
   }
+
+  open(){
+    // this.websocketService.openConnection();
+    this.setupWebsocketConnection();
+  }
 }

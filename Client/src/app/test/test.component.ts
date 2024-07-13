@@ -10,7 +10,7 @@ import { AddElementFormComponent } from '../add-element-form/add-element-form.co
 import { CardComponent } from '../card/card.component';
 import { CustomizableDirective } from '../directives/customizable.directive';
 import { CustomizableModel, DomRectModel, MetaData } from '../model/customizable.model';
-import { CRDTWSService } from '../services/crdt-ws.service';
+import { NewCRDTWSService } from '../services/new-crdt-ws.service';
 import { SnackBarService } from '../services/snackbar.service';
 
 @Component({
@@ -33,7 +33,7 @@ export class TestComponent implements OnDestroy {
   title = 'Multi-User Real-Time Collaboration App Creatingly';
   itemResized$: Subject<{ domRect: DomRectModel, id: string }> = new Subject<{ domRect: DomRectModel, id: string }>();
   itemDropped$: Subject<{ domRect: DomRectModel, id: string }> = new Subject<{ domRect: DomRectModel, id: string }>();
-  constructor(public crdtwsService: CRDTWSService<CustomizableModel>, public dialog: MatDialog, public snackBarService: SnackBarService) {
+  constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>, public dialog: MatDialog, public snackBarService: SnackBarService) {
 
     this.itemResized$.pipe(distinctUntilChanged(), debounce(() => interval(100)),).subscribe((event: { domRect: DomRectModel, id: string }) => {
       this.crdtwsService.updateItem(event.id, event.domRect);
