@@ -12,6 +12,16 @@ import { MetaData } from '../model/customizable.model';
   styleUrl: './card.component.scss'
 })
 export class CardComponent {
-  @Input() model?: MetaData;
+  // @Input() model?: MetaData;
+  @Input() direction: "ltr" | "rtl" = 'ltr';
+  @Input() width: string = '250px';
+  @Input() type: 'text' | 'number' = 'text';
+  @Input() name: string = 'name';
+  @Input() label: string = 'label';
+  @Input() placeholder: string = 'something';
+  @Input() appearance: 'fill' | 'outline' = 'fill';
+  @Input() labelPosition: "default" | "start" | "top" = 'top';
+  @Input() disabled: boolean = false;
+  @Input() value: any = 'test';
 
 }
