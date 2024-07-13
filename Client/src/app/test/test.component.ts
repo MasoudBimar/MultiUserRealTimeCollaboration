@@ -11,7 +11,7 @@ import { debounce, distinctUntilChanged, interval, Subject } from 'rxjs';
 import { AddElementFormComponent } from '../add-element-form/add-element-form.component';
 import { CardComponent } from '../card/card.component';
 import { CustomizableDirective } from '../directives/customizable.directive';
-import { CustomizableModel, DomRectModel, FormEditorTypeEnum, MetaData } from '../model/customizable.model';
+import { CustomizableModel, DomRectModel, MetaData } from '../model/customizable.model';
 import { NewCRDTWSService } from '../services/new-crdt-ws.service';
 import { SnackBarService } from '../services/snackbar.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -42,7 +42,6 @@ export class TestComponent implements OnDestroy {
   title = 'Multi-User Real-Time Collaboration App Creatingly';
   itemResized$: Subject<{ domRect: DomRectModel, id: string }> = new Subject<{ domRect: DomRectModel, id: string }>();
   itemDropped$: Subject<{ domRect: DomRectModel, id: string }> = new Subject<{ domRect: DomRectModel, id: string }>();
-  constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>, public dialog: MatDialog, public snackBarService: SnackBarService) {
   constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>, public dialog: MatDialog, public snackBarService: SnackBarService) {
 
     this.itemResized$.pipe(distinctUntilChanged(), debounce(() => interval(100)),).subscribe((event: { domRect: DomRectModel, id: string }) => {
