@@ -12,6 +12,7 @@ import { CustomizableDirective } from './directives/customizable.directive';
 import { CustomizableModel, DomRectModel, MetaData } from './model/customizable.model';
 import { CRDTService } from './services/crdt.service';
 import { SnackBarService } from './services/snackbar.service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ import { SnackBarService } from './services/snackbar.service';
     CommonModule,
     MatButtonModule,
     CardComponent,
-    FormsModule
+    FormsModule,
+    SidebarComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

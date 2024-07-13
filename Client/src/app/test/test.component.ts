@@ -2,16 +2,20 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule, MatPseudoCheckboxModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
 import { debounce, distinctUntilChanged, interval, Subject } from 'rxjs';
 import { AddElementFormComponent } from '../add-element-form/add-element-form.component';
 import { CardComponent } from '../card/card.component';
 import { CustomizableDirective } from '../directives/customizable.directive';
-import { CustomizableModel, DomRectModel, MetaData } from '../model/customizable.model';
-import { CRDTWSService } from '../services/crdt-ws.service';
+import { CustomizableModel, DomRectModel, FormEditorTypeEnum, MetaData } from '../model/customizable.model';
+import { NewCRDTWSService } from '../services/new-crdt-ws.service';
 import { SnackBarService } from '../services/snackbar.service';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-test',
@@ -23,17 +27,22 @@ import { SnackBarService } from '../services/snackbar.service';
     CommonModule,
     MatButtonModule,
     CardComponent,
-    FormsModule
+    FormsModule,
+    SidebarComponent,
+    MatSelectModule,
+    MatOptionModule,
+    MatCheckboxModule
   ],
   templateUrl: './test.component.html',
   styleUrl: './test.component.scss'
 })
 export class TestComponent implements OnDestroy {
   // private webSocketSubscription: Subscription;
+  // enum: typeof FormEditorTypeEnum = FormEditorTypeEnum;
   title = 'Multi-User Real-Time Collaboration App Creatingly';
   itemResized$: Subject<{ domRect: DomRectModel, id: string }> = new Subject<{ domRect: DomRectModel, id: string }>();
   itemDropped$: Subject<{ domRect: DomRectModel, id: string }> = new Subject<{ domRect: DomRectModel, id: string }>();
-  constructor(public crdtwsService: CRDTWSService<CustomizableModel>, public dialog: MatDialog, public snackBarService: SnackBarService) {
+  constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>, public dialog: MatDialog, public snackBarService: SnackBarService) {
 
     this.itemResized$.pipe(distinctUntilChanged(), debounce(() => interval(100)),).subscribe((event: { domRect: DomRectModel, id: string }) => {
       this.crdtwsService.updateItem(event.id, event.domRect);
@@ -74,7 +83,7 @@ export class TestComponent implements OnDestroy {
   }
 
   toggleConnection(){
-    if (this.crdtwsService.websocketService.isConnected) {
+    if (this.crdtwsService.websocketService.connectionStatus) {
       this.crdtwsService.close();
     }
   }

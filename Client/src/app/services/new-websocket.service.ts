@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, timer } from 'rxjs';
-import { catchError, concatAll, delayWhen, retryWhen, tap } from 'rxjs/operators';
+import { catchError, concatAll, delayWhen, retry, retryWhen, tap } from 'rxjs/operators';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
 
@@ -15,6 +15,7 @@ export class NewWebSocketService<T> {
   private messagesSubject$ = new BehaviorSubject<Observable<T>>(EMPTY);
 
   public messages$ = this.messagesSubject$.pipe(concatAll(), catchError(e => { throw e }));
+  connectionStatus = false;
 
   public getNewWebSocket(): WebSocketSubject<T> {
     return webSocket({
@@ -24,11 +25,13 @@ export class NewWebSocketService<T> {
         next: () => {
           console.log('[websocket service] connection closed');
           this.webSocket$ = undefined;
+          this.connectionStatus = false;
           this.connect({ reconnect: true });
         }
       },
       openObserver: {
         next: () => {
+          this.connectionStatus = true;
           console.log('[websocket service] connection opened');
         }
       }
@@ -36,6 +39,7 @@ export class NewWebSocketService<T> {
   }
 
   sendMessage(message: T): void {
+    console.log("🚀 ~ NewWebSocketService<T> ~ sendMessage ~ message:", message);
     this.webSocket$?.next(message);
   }
 
@@ -47,7 +51,7 @@ export class NewWebSocketService<T> {
     if (!this.webSocket$ || this.webSocket$.closed) {
       this.webSocket$ = this.getNewWebSocket();
       const messages = this.webSocket$.pipe(config.reconnect ? this.reconnect : o => o,
-        tap({ error: error => console.log(error)}), catchError(() => EMPTY));
+        tap({ error: error => console.log(error) }), catchError(() => EMPTY));
       this.messagesSubject$.next(messages);
     }
   }

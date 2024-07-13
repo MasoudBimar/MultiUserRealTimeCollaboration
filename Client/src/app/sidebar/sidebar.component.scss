@@ -1,0 +1,60 @@
+.example-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.example-radio-group {
+  display: block;
+  border: 1px solid #555;
+  margin: 20px;
+  padding: 10px;
+}
+
+.sidebar-item {
+  // position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background: #fff;
+  min-height: 30px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: -webkit-grab;
+  cursor: grab;
+  transition: color 0.1s ease-out;
+}
+.sidebar-item:hover {
+  color: #1890ff;
+  box-shadow: 0 0 10px #888888;
+  z-index: 1;
+}
+
+.sidebar-icon {
+  display: inline-block;
+  color: inherit;
+  font-style: normal;
+  line-height: 0;
+  text-align: center;
+  text-transform: none;
+  vertical-align: -0.125em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.sidebar-icon svg {
+  pointer-events: none;
+}
+
+.sidebar-icon-text {
+  text-align: center;
+  font-size: 12px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
