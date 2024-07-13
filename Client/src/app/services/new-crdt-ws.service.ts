@@ -12,14 +12,14 @@ export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> 
 
   constructor(public websocketService: NewWebSocketService<T>, public persistenceService: PersistenceService<T>) {
     this.setupWebsocketConnection();
-    this.persistenceService.loadDoc(this.docName);
+    this.document = this.persistenceService.loadDoc(this.docName);
     this.open();
   }
 
 
 
   setupWebsocketConnection() {
-    this.websocketService.messages$.pipe(takeUntilDestroyed()).subscribe( (message: T) => {
+    this.websocketService.messages$.subscribe( (message: T) => {
       console.log("🚀 ~ NewCRDTWSService<T ~ this.websocketService.messages$.subscribe ~ message:", message);
       this.document.set(message.id, message);
     })

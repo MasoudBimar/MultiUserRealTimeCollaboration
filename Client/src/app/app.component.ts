@@ -13,6 +13,7 @@ import { CustomizableModel, DomRectModel, MetaData } from './model/customizable.
 import { CRDTService } from './services/crdt.service';
 import { SnackBarService } from './services/snackbar.service';
 import { ToolbarComponent } from './toolbar/toolbar.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     MatButtonModule,
     CardComponent,
     FormsModule,
-    ToolbarComponent
+    ToolbarComponent,
+    SidebarComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

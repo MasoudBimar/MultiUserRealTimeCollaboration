@@ -3,12 +3,12 @@ export class CustomizableModel {
   id: string;
   domRect?: DomRectModel;
   metaData?: MetaData;
-  itemType: 'input' | 'button' | 'select' = 'input';
+  itemType: FormEditorTypeEnum = FormEditorTypeEnum.Input;
 
   constructor() {
-    if (this.itemType === 'input') {
+    if (this.itemType === FormEditorTypeEnum.Input) {
       this.domRect = new DomRectModel(0, 0, 300, 100);
-    } else if (this.itemType === 'button') {
+    } else if (this.itemType === FormEditorTypeEnum.Button) {
       this.domRect = new DomRectModel(0, 0, 100, 50);
     }
     this.id = Utility.uuidv4();
@@ -22,7 +22,7 @@ export class MetaData {
   value: unknown;
 
 
-  constructor(public label = 'untitled',public  body = 'nobody') {
+  constructor(public label = 'untitled', public body = 'nobody') {
 
   }
 }
@@ -43,4 +43,15 @@ export class DomRectModel {
     this.width = width;
     this.height = height;
   }
+}
+
+export const enum FormEditorTypeEnum {
+  Calendar = 'calendar',
+  Checkbox = 'checkbox',
+  Switch = 'switch',
+  Input = 'input',
+  Radio = 'radio',
+  Select = 'select',
+  TextArea = 'textArea',
+  Button = 'button'
 }
