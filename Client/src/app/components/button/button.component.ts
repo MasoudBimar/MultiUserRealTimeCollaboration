@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CustomizableDirective } from '../../directives/customizable.directive';
 import { BaseCustomizableComponent } from '../base-customizable/base-customizable.component';
 
 @Component({
@@ -8,7 +7,6 @@ import { BaseCustomizableComponent } from '../base-customizable/base-customizabl
   imports: [],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
-  hostDirectives:[{directive: CustomizableDirective, inputs:['domRect', 'id'], outputs:['itemResized','itemDropped', 'itemRemoved']}]
 })
 export class ButtonComponent extends BaseCustomizableComponent {
 

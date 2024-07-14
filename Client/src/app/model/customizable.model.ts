@@ -1,14 +1,13 @@
 import { Utility } from "../utility/utility";
 export class CustomizableModel {
   id: string;
-  domRect?: DomRectModel;
   itemType: FormEditorTypeEnum = FormEditorTypeEnum.Input;
   componentInputs: Partial<Record<keyof ComponentInput, unknown>>;
 
   constructor() {
-    this.domRect = new DomRectModel(0, 0, 300, 100);
+
     this.id = Utility.uuidv4();
-    this.componentInputs = { id: this.id };
+    this.componentInputs = { id: this.id, domRect : new DomRectModel(0, 0, 300, 100) };
   }
 }
 
@@ -61,6 +60,7 @@ export interface ComponentInput {
   value: any;
   margin: string;
   padding: string;
+  domRect: DomRectModel;
 }
 
 
