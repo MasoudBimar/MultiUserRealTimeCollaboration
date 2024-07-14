@@ -40,7 +40,7 @@ export class AddElementFormComponent implements OnInit {
 
   creatTodoForm(): FormGroup {
     return new FormGroup({
-      'label': new FormControl('', [Validators.required]),
+      // 'label': new FormControl('', [Validators.required]),
       // 'lable': new FormControl('', [Validators.required]),
       'itemType': new FormControl('', [Validators.required]),
       // 'lable': new FormControl('', [Validators.required]),

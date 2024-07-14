@@ -1,16 +1,18 @@
-import { AsyncPipe, NgComponentOutlet } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { AsyncPipe, CommonModule, NgComponentOutlet } from '@angular/common';
+import { Component, inject, ViewContainerRef } from '@angular/core';
 import { AdService } from './ad.service';
 
 @Component({
   selector: 'app-dynamic-component-loader',
   standalone: true,
-  imports: [NgComponentOutlet, AsyncPipe],
+  imports: [NgComponentOutlet, AsyncPipe, CommonModule],
   templateUrl: './dynamic-component-loader.component.html',
   styleUrl: './dynamic-component-loader.component.scss'
 })
 export class DynamicComponentLoaderComponent {
   private adList = inject(AdService).getAds();
+  vcr = inject(ViewContainerRef);
+
 
   private currentAdIndex = 0;
 

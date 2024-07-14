@@ -6,13 +6,13 @@
 <!-- </div> -->
 <mat-dialog-content *ngIf="form">
   <form [formGroup]="form">
-    <mat-form-field>
+    <!-- <mat-form-field>
       <mat-label>Label</mat-label>
       <input matInput formControlName="label">
       <mat-error *ngIf="!form.get('label')?.valid && form.get('label')?.touched" class="text-danger">
         *Item is required
       </mat-error>
-    </mat-form-field>
+    </mat-form-field> -->
     <!-- <mat-form-field>
       <mat-label>Body</mat-label>
       <input matInput formControlName="body">
@@ -21,19 +21,16 @@
       </mat-error>
     </mat-form-field> -->
     <mat-form-field>
-      <mat-label>Element Type</mat-label>
+      <mat-label>Component Type</mat-label>
       <mat-select formControlName="itemType">
-        <mat-option value="input">Input Element</mat-option>
-        <mat-option value="button">Button Element</mat-option>
-        <mat-option value="select">Select Element</mat-option>
-        <mat-option value='calendar'>Calendar Element</mat-option>
-        <mat-option value='checkbox'>Checkbox Element</mat-option>
-        <mat-option value='switch'>Switch Element</mat-option>
-        <mat-option value='radio'>Radio Element</mat-option>
-        <mat-option value='textArea'>TextArea Element</mat-option>
-        <!-- <mat-option value='select'>Select Element</mat-option> -->
-        <!-- <mat-option value='input'>Input Element</mat-option> -->
-        <!-- <mat-option value='button'>Button Element</mat-option> -->
+        <mat-option value="input">Input Component</mat-option>
+        <mat-option value='calendar'>Calendar Component</mat-option>
+        <mat-option value='checkbox'>Checkbox Component</mat-option>
+        <mat-option value='card'>Card Component</mat-option>
+        <mat-option value='radio'>Radio Component</mat-option>
+        <mat-option value="select">Select Component</mat-option>
+        <mat-option value='textArea'>TextArea Component</mat-option>
+        <mat-option value="button">Button Component</mat-option>
       </mat-select>
     </mat-form-field>
   </form>

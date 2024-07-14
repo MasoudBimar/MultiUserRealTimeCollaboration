@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { DomRectModel } from '../model/customizable.model';
 import { NewWebSocketService } from './new-websocket.service';
 import { PersistenceService } from './persistence.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
-export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> {
+export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel}> {
   document = new Map<string, T>();
   offlineUpdates = new Map<string, T>();
   docName = 'DesignDoc';

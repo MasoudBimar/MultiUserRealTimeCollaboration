@@ -1,5 +1,12 @@
 <div class="ad-banner-example">
   <h3>Advertisements</h3>
+  <!-- <ng-container *ngIf="currentAd.elementType === 'custom'">
+    <ng-container *ngComponentOutlet="currentAd.component;inputs: currentAd.inputs;" />
+  </ng-container>
+
+  <ng-container *ngIf="currentAd.elementType === 'native'">
+
+  </ng-container> -->
   <ng-container *ngComponentOutlet="currentAd.component;inputs: currentAd.inputs;" />
-  <button (click)="displayNextAd()">Next</button>
+  <!-- <button (click)="displayNextAd()">Next</button> -->
 </div>

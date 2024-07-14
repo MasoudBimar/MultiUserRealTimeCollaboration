@@ -2,30 +2,16 @@ import { Utility } from "../utility/utility";
 export class CustomizableModel {
   id: string;
   domRect?: DomRectModel;
-  metaData?: MetaData;
   itemType: FormEditorTypeEnum = FormEditorTypeEnum.Input;
+  componentInputs: Partial<Record<keyof ComponentInput, unknown>>;
 
   constructor() {
-    if (this.itemType === FormEditorTypeEnum.Input) {
-      this.domRect = new DomRectModel(0, 0, 300, 100);
-    } else if (this.itemType === FormEditorTypeEnum.Button) {
-      this.domRect = new DomRectModel(0, 0, 100, 50);
-    }
+    this.domRect = new DomRectModel(0, 0, 300, 100);
     this.id = Utility.uuidv4();
+    this.componentInputs = { id: this.id };
   }
 }
 
-export class MetaData {
-
-  // label: string;
-  // body: string;
-  value: unknown;
-
-
-  constructor(public label = 'untitled', public body = 'nobody') {
-
-  }
-}
 
 export class DomRectModel {
   bottom: number = 0;
@@ -46,12 +32,35 @@ export class DomRectModel {
 }
 
 export const enum FormEditorTypeEnum {
+  Input = 'input',
   Calendar = 'calendar',
   Checkbox = 'checkbox',
   Switch = 'switch',
-  Input = 'input',
   Radio = 'radio',
   Select = 'select',
   TextArea = 'textArea',
-  Button = 'button'
+  Button = 'button',
+
 }
+
+export interface ComponentInput {
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+  direction: "ltr" | "rtl";
+  width: string;
+  height: string;
+  display: 'block' | 'inline' | 'inline-block' | 'flex';
+  type: 'text' | 'number';
+  label: string;
+  placeholder: string;
+  appearance: 'fill' | 'outline';
+  labelPosition: "default" | "start" | "top";
+  disabled: boolean;
+  value: any;
+  margin: string;
+  padding: string;
+}
+
+

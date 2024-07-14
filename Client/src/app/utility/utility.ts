@@ -1,3 +1,13 @@
+import { Type } from "@angular/core";
+import { CardComponent } from "../components/card/card.component";
+import { InputComponent } from "../components/input/input.component";
+import { CalendarComponent } from "../components/calendar/calendar.component";
+import { CheckboxComponent } from "../components/checkbox/checkbox.component";
+import { RadioComponent } from "../components/radio/radio.component";
+import { SelectComponent } from "../components/select/select.component";
+import { TextAreaComponent } from "../components/text-area/text-area.component";
+import { ButtonComponent } from "../components/button/button.component";
+
 export class Utility {
   static stringify(object: unknown): string {
 
@@ -142,6 +152,21 @@ export class Utility {
       }
     }
     return value;
+  }
+
+  static componentTypeResolver(){
+    const componentMapRegistery = new Map<string, Type<unknown>>();
+    componentMapRegistery.set('input', InputComponent);
+    componentMapRegistery.set('calendar', CalendarComponent);
+    componentMapRegistery.set('checkbox', CheckboxComponent);
+    componentMapRegistery.set('card', CardComponent);
+    componentMapRegistery.set('radio', RadioComponent);
+    componentMapRegistery.set('select', SelectComponent);
+    componentMapRegistery.set('textArea', TextAreaComponent);
+    componentMapRegistery.set('button', ButtonComponent);
+    return function typeResolver(type: string): Type<unknown>{
+      return componentMapRegistery.get(type) ?? CardComponent;
+    }
   }
 
 }

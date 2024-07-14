@@ -1,12 +1,10 @@
 import { CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
-import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   Directive,
   ElementRef,
   EventEmitter,
   HostListener,
-  Inject,
   Input,
   OnChanges,
   Output,
@@ -19,6 +17,7 @@ import { DomRectModel } from '../model/customizable.model';
   hostDirectives: [{ directive: CdkDrag, inputs: ['cdkDragBoundary'], outputs: ['cdkDragEnded'] }],
 })
 export class CustomizableDirective implements AfterViewInit, OnChanges {
+  // private renderer: Renderer2;
   previousSize: DomRectModel = { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, x: 0, y: 0 };
   customizers: ElementRef<HTMLElement>[] = [];
   isResizing = false;
@@ -29,14 +28,18 @@ export class CustomizableDirective implements AfterViewInit, OnChanges {
   prevDistance = 0;
   MIN_SIZE = 20;
   @Input() domRect?: DomRectModel;
+  @Input() id?: string;
   @Output() itemResized: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();
   @Output() itemDropped: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();
   @Output() itemRemoved: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();
   constructor(
     private elementRef: ElementRef<HTMLElement>,
-    @Inject(DOCUMENT) private _document: Document,
+    // @Inject(DOCUMENT) private _document: Document,
     private renderer: Renderer2
-  ) { }
+  ) {
+    // this.renderer = inject(Renderer2);
+    this.renderer.addClass(elementRef.nativeElement, 'example-box');
+   }
 
   @HostListener('cdkDragEnded', ['$event'])
   onDragEnded(dragEndedEvent: CdkDragEnd) {
