@@ -6,31 +6,18 @@
 <!-- </div> -->
 <mat-dialog-content *ngIf="form">
   <form [formGroup]="form">
-    <!-- <mat-form-field>
-      <mat-label>Label</mat-label>
-      <input matInput formControlName="label">
-      <mat-error *ngIf="!form.get('label')?.valid && form.get('label')?.touched" class="text-danger">
-        *Item is required
-      </mat-error>
-    </mat-form-field> -->
-    <!-- <mat-form-field>
-      <mat-label>Body</mat-label>
-      <input matInput formControlName="body">
-      <mat-error *ngIf="!form.get('body')?.valid && form.get('body')?.touched" class="text-danger">
-        *Item is required
-      </mat-error>
-    </mat-form-field> -->
     <mat-form-field>
       <mat-label>Component Type</mat-label>
       <mat-select formControlName="itemType">
-        <mat-option value="input">Input Component</mat-option>
+          <mat-option *ngFor="let item of componentList" [value]="item">{{item}} Component</mat-option>
+        <!-- <mat-option value="input">Input Component</mat-option>
         <mat-option value='calendar'>Calendar Component</mat-option>
         <mat-option value='checkbox'>Checkbox Component</mat-option>
         <mat-option value='card'>Card Component</mat-option>
         <mat-option value='radio'>Radio Component</mat-option>
         <mat-option value="select">Select Component</mat-option>
         <mat-option value='textArea'>TextArea Component</mat-option>
-        <mat-option value="button">Button Component</mat-option>
+        <mat-option value="button">Button Component</mat-option> -->
       </mat-select>
     </mat-form-field>
   </form>

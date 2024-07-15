@@ -39,7 +39,7 @@ export class NewWebSocketService<T> {
   }
 
   sendMessage(message: T): void {
-    console.log("🚀 ~ NewWebSocketService<T> ~ sendMessage ~ message:", message);
+    console.log("🚀 ~ NewCRDTWSService<T ~ seeeeeeeeeeend mmmmmmmmmmmessage:", message)
     this.webSocket$?.next(message);
   }
 

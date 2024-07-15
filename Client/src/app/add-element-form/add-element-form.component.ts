@@ -6,6 +6,7 @@ import { MatDialogActions, MatDialogContent, MatDialogModule, MatDialogRef, MatD
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Utility } from '../utility/utility';
 @Component({
   selector: 'app-add-element-form',
   standalone: true,
@@ -26,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class AddElementFormComponent implements OnInit {
   form?: FormGroup;
+  componentList = Array.from(Utility.getComponentList().keys());
   constructor(
     public dialogRef: MatDialogRef<AddElementFormComponent>,) {
 
@@ -40,10 +42,7 @@ export class AddElementFormComponent implements OnInit {
 
   creatTodoForm(): FormGroup {
     return new FormGroup({
-      // 'label': new FormControl('', [Validators.required]),
-      // 'lable': new FormControl('', [Validators.required]),
       'itemType': new FormControl('', [Validators.required]),
-      // 'lable': new FormControl('', [Validators.required]),
     });
   }
 }

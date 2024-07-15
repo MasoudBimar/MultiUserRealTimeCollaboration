@@ -1,9 +1,10 @@
+// import { ComponentRef, Type } from "@angular/core";
 import { Utility } from "../utility/utility";
 export class CustomizableModel {
   id: string;
   itemType: FormEditorTypeEnum = FormEditorTypeEnum.Input;
   componentInputs: Partial<Record<keyof ComponentInput, unknown>>;
-
+  // componentref!: ComponentRef<unknown>;
   constructor() {
 
     this.id = Utility.uuidv4();

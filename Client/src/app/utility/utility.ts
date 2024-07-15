@@ -154,7 +154,15 @@ export class Utility {
     return value;
   }
 
-  static componentTypeResolver(){
+  static componentTypeResolver(): (type: string) => Type<unknown>{
+
+    const componentMapRegistery = Utility.getComponentList();
+    return function typeResolver(type: string): Type<unknown>{
+      return componentMapRegistery.get(type) ?? CardComponent;
+    }
+  }
+
+  static getComponentList(): Map<string, Type<unknown>>{
     const componentMapRegistery = new Map<string, Type<unknown>>();
     componentMapRegistery.set('input', InputComponent);
     componentMapRegistery.set('calendar', CalendarComponent);
@@ -164,9 +172,7 @@ export class Utility {
     componentMapRegistery.set('select', SelectComponent);
     componentMapRegistery.set('textArea', TextAreaComponent);
     componentMapRegistery.set('button', ButtonComponent);
-    return function typeResolver(type: string): Type<unknown>{
-      return componentMapRegistery.get(type) ?? CardComponent;
-    }
+    return componentMapRegistery;
   }
 
 }

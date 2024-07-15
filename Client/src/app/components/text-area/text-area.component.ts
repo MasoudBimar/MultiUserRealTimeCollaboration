@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BaseCustomizableComponent } from '../base-customizable/base-customizable.component';
 
 @Component({
   selector: 'app-text-area',
@@ -7,6 +8,6 @@ import { Component } from '@angular/core';
   templateUrl: './text-area.component.html',
   styleUrl: './text-area.component.scss',
 })
-export class TextAreaComponent {
+export class TextAreaComponent extends BaseCustomizableComponent {
 
 }

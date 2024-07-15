@@ -9,7 +9,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDrawerMode, MatSidenavModule } from '@angular/material/sidenav';
 import { AddElementFormComponent } from '../add-element-form/add-element-form.component';
 import { CustomizableModel } from '../model/customizable.model';
-import { NewCRDTWSService } from '../services/new-crdt-ws.service';
+import { EventService } from '../services/event.service';
 import { SnackBarService } from '../services/snackbar.service';
 
 @Component({
@@ -30,11 +30,14 @@ import { SnackBarService } from '../services/snackbar.service';
 })
 export class SidebarComponent {
   mode = new FormControl('side' as MatDrawerMode);
+  connestionStatus: boolean = false;
   /**
    *
    */
-  constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>, public dialog: MatDialog, public snackBarService: SnackBarService) {
-
+  constructor(public eventService: EventService, public dialog: MatDialog, public snackBarService: SnackBarService) {
+    this.eventService.connectionChanged.subscribe((status: boolean) => {
+      this.connestionStatus = status;
+    });
   }
 
   addNewElement() {
@@ -44,7 +47,7 @@ export class SidebarComponent {
       if (response) {
         const newItem = new CustomizableModel();
         newItem.itemType = response.itemType;
-        this.crdtwsService.insert(newItem);
+        this.eventService.itemAdded.emit(newItem);
         this.snackBarService.openSuccess('ToDo Item Created', 'Ok');
       } else {
         this.snackBarService.openError('Operation Failed', 'Ok');
@@ -53,18 +56,6 @@ export class SidebarComponent {
   }
 
   clearBorad() {
-    this.crdtwsService.clear();
-  }
-
-  deleteItem(idx: string) {
-    this.crdtwsService.delete(idx);
-  }
-
-  toggleConnection(){
-    if (this.crdtwsService.websocketService.connectionStatus) {
-      this.crdtwsService.close();
-    } else {
-      this.crdtwsService.open();
-    }
+    this.eventService.resetDesigner.emit();
   }
 }

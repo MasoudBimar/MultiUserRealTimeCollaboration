@@ -33,9 +33,3 @@ export class PersistenceService<T> {
     return data ? JSON.parse(data) as Map<string, T> : [];
   }
 }
-
-// if (doc) {
-//   for (const key in doc) {
-//     document.set(key, doc[key]);
-//   }
-// }
