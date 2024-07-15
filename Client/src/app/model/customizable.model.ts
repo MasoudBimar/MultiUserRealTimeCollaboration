@@ -3,12 +3,26 @@ import { Utility } from "../utility/utility";
 export class CustomizableModel {
   id: string;
   itemType: FormEditorTypeEnum = FormEditorTypeEnum.Input;
-  componentInputs: Partial<Record<keyof ComponentInput, unknown>>;
-  // componentref!: ComponentRef<unknown>;
+  // componentInputs: Partial<Record<keyof ComponentInput, unknown>>;
+  name?: string;
+  title?: string;
+  description?: string;
+  direction?: "ltr" | "rtl";
+  display?: 'block' | 'inline' | 'inline-block' | 'flex';
+  type?: 'text' | 'number';
+  label?: string;
+  placeholder?: string;
+  appearance?: 'fill' | 'outline';
+  labelPosition?: "default" | "start" | "top";
+  disabled?: boolean;
+  value?: any;
+  margin?: string;
+  padding?: string;
+  domRect?: DomRectModel;
   constructor() {
 
     this.id = Utility.uuidv4();
-    this.componentInputs = { id: this.id, domRect : new DomRectModel(0, 0, 300, 100) };
+    this.domRect = new DomRectModel(0, 0, 300, 100);
   }
 }
 
@@ -43,25 +57,31 @@ export const enum FormEditorTypeEnum {
 
 }
 
-export interface ComponentInput {
-  id: string;
-  name: string;
-  title: string;
-  description: string;
-  direction: "ltr" | "rtl";
-  width: string;
-  height: string;
-  display: 'block' | 'inline' | 'inline-block' | 'flex';
-  type: 'text' | 'number';
-  label: string;
-  placeholder: string;
-  appearance: 'fill' | 'outline';
-  labelPosition: "default" | "start" | "top";
-  disabled: boolean;
-  value: any;
-  margin: string;
-  padding: string;
-  domRect: DomRectModel;
+// export interface ComponentInput {
+//   id: string;
+//   name: string;
+//   title: string;
+//   description: string;
+//   direction: "ltr" | "rtl";
+//   width: string;
+//   height: string;
+//   display: 'block' | 'inline' | 'inline-block' | 'flex';
+//   type: 'text' | 'number';
+//   label: string;
+//   placeholder: string;
+//   appearance: 'fill' | 'outline';
+//   labelPosition: "default" | "start" | "top";
+//   disabled: boolean;
+//   value: any;
+//   margin: string;
+//   padding: string;
+//   domRect: DomRectModel;
+// }
+
+export interface Message<T> {
+  type: 'add' | 'update' | 'remove';
+  payload: T;
+
 }
 
 

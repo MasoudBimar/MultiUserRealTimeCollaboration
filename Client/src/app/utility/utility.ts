@@ -154,15 +154,11 @@ export class Utility {
     return value;
   }
 
-  static componentTypeResolver(): (type: string) => Type<unknown>{
-
-    const componentMapRegistery = Utility.getComponentList();
-    return function typeResolver(type: string): Type<unknown>{
-      return componentMapRegistery.get(type) ?? CardComponent;
-    }
+  static componentTypeResolver(type: string): Type<unknown> {
+    return Utility.getComponentList().get(type) ?? CardComponent;
   }
 
-  static getComponentList(): Map<string, Type<unknown>>{
+  static getComponentList(): Map<string, Type<unknown>> {
     const componentMapRegistery = new Map<string, Type<unknown>>();
     componentMapRegistery.set('input', InputComponent);
     componentMapRegistery.set('calendar', CalendarComponent);

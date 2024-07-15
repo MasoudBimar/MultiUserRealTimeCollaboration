@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, timer } from 'rxjs';
-import { catchError, concatAll, delayWhen, retry, retryWhen, tap } from 'rxjs/operators';
+import { catchError, concatAll, delayWhen, retryWhen, tap } from 'rxjs/operators';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
+import { Message } from '../model/customizable.model';
 
 // https://rxjs-course.dev/course/subject-variants/websocket-subject/
 @Injectable({
@@ -10,14 +11,14 @@ import { environment } from '../../environments/environment';
 })
 export class NewWebSocketService<T> {
 
-  private webSocket$!: WebSocketSubject<T> | undefined;
+  private webSocket$!: WebSocketSubject<Message<T>> | undefined;
 
-  private messagesSubject$ = new BehaviorSubject<Observable<T>>(EMPTY);
+  private messagesSubject$ = new BehaviorSubject<Observable<Message<T>>>(EMPTY);
 
   public messages$ = this.messagesSubject$.pipe(concatAll(), catchError(e => { throw e }));
   connectionStatus = false;
 
-  public getNewWebSocket(): WebSocketSubject<T> {
+  public getNewWebSocket(): WebSocketSubject<Message<T>> {
     return webSocket({
       url: environment.wsServerUrl,
       binaryType: 'arraybuffer',
@@ -38,7 +39,7 @@ export class NewWebSocketService<T> {
     })
   }
 
-  sendMessage(message: T): void {
+  sendMessage(message: Message<T>): void {
     console.log("🚀 ~ NewCRDTWSService<T ~ seeeeeeeeeeend mmmmmmmmmmmessage:", message)
     this.webSocket$?.next(message);
   }
@@ -56,7 +57,7 @@ export class NewWebSocketService<T> {
     }
   }
 
-  private reconnect(observable: Observable<T>): Observable<T> {
+  private reconnect(observable: Observable<Message<T>>): Observable<Message<T>> {
     return observable.pipe(retryWhen(errors => errors.pipe(tap(val => console.log('[websocket service] try to connect', val)),
       delayWhen(() => timer(environment.reconnectInterval)))));
   }

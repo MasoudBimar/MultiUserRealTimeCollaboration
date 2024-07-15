@@ -1,4 +1,4 @@
-import { Injectable, WritableSignal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DomRectModel } from '../model/customizable.model';
 import { NewWebSocketService } from './new-websocket.service';
 import { PersistenceService } from './persistence.service';
@@ -6,7 +6,7 @@ import { EventService } from './event.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> {
-  document?: WritableSignal<Map<string, T>>;
+  document?: Map<string, T>;
   docName: string = '';
   offlineUpdates = new Map<string, T>();
   constructor(
@@ -17,70 +17,47 @@ export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> 
 
   }
 
-  registerDocument(doc:  WritableSignal<Map<string, T>>, docName: string){
+  registerDocument(doc: Map<string, T>, docName: string) {
     this.document = doc;
     this.docName = docName;
-    this.websocketService.messages$.subscribe((message: T) => {
-      console.log("🚀 ~ NewCRDTWSService<T ~ geeeeeeeeettttttt mmmmmmmmmmmessage:", message)
-      this.document?.update(docInstance => {
-        docInstance.set(message.id, message);
-        return new Map(docInstance.entries());
-      });
-    });
     this.open();
   }
 
   insert(newItem: T) {
-    this.document?.update(map => {
-      map.set(newItem.id, newItem);
-      return new Map(map.entries());
-    });
-    this.websocketService.sendMessage(newItem);
+    this.document?.set(newItem.id, newItem);
+    this.websocketService.sendMessage({ type: 'add', payload: newItem });
     if (this.document) {
-      this.persistenceService.persistDoc(this.document(), this.docName);
+      this.persistenceService.persistDoc(this.document, this.docName);
     }
 
   }
 
 
   delete(id: string) {
-    this.document?.update(map => {
-      map.delete(id);
-      return map;
-    });
+    this.document?.delete(id);
+    this.websocketService.sendMessage({ type: 'remove', payload: { id: id, domRect: undefined } as T });
     if (this.document) {
-      this.persistenceService.persistDoc(this.document(), this.docName);
+      this.persistenceService.persistDoc(this.document, this.docName);
     }
   }
 
 
   clear() {
-    this.document?.set(new Map<string, T>());
+    this.document?.clear();
   }
 
 
   updateItem(id: string, model: DomRectModel) {
 
-    this.document?.update(map => {
-      const prevItem = map.get(id);
-      if (prevItem) {
-        prevItem.domRect = model;
-        map.set(id, prevItem);
-        this.websocketService.sendMessage(prevItem);
-        if (this.document) {
-          this.persistenceService.persistDoc(this.document(), this.docName);
-        }
+    const prevItem = this.document?.get(id);
+    if (prevItem) {
+      prevItem.domRect = model;
+      this.document?.set(id, prevItem);
+      this.websocketService.sendMessage({ type: 'update', payload: prevItem });
+      if (this.document) {
+        this.persistenceService.persistDoc(this.document, this.docName);
       }
-      return map;
-    })
-
-    // const prevItem = this.document().get(id);
-    // if (prevItem) {
-    //   prevItem.domRect = model;
-    //   this.document.set(id, prevItem);
-    //   this.websocketService.sendMessage(prevItem);
-    //   this.persistenceService.persistDoc(this.document(), this.docName);
-    // }
+    }
   }
 
   close() {

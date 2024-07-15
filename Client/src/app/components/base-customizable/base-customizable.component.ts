@@ -12,7 +12,7 @@ import { NewCRDTWSService } from '../../services/new-crdt-ws.service';
   // outputs: ['itemResized', 'itemDropped', 'itemRemoved' ] ,
 })
 export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
-  @Input({required: true}) id!: string;
+  @Input({ required: true }) id!: string;
   @Input() direction: "ltr" | "rtl" = 'ltr';
   @Input() width: string = '250px';
   @Input() type: 'text' | 'number' = 'text';
@@ -23,6 +23,7 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   @Input() labelPosition: "default" | "start" | "top" = 'top';
   @Input() disabled: boolean = false;
   @Input() value: any = 'test';
+  @Input() itemType: any = 'test';
   // ==================================================================================
   @Input({ required: true }) domRect!: DomRectModel;
 
@@ -144,12 +145,17 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
       // set the element's new position:
       // this.elementRef.nativeElement.style.top = (this.elementRef.nativeElement.offsetTop - this.pos2) + "px";
       // this.elementRef.nativeElement.style.left = (this.elementRef.nativeElement.offsetLeft - this.pos1) + "px";
-      this.domRect.y = this.domRect.top = (this.elementRef.nativeElement.offsetTop - this.pos2);
-      this.domRect.x = this.domRect.left = (this.elementRef.nativeElement.offsetLeft - this.pos1);
-      this.renderer.setStyle(this.elementRef.nativeElement, 'top', this.domRect.top+ "px" );
-      this.renderer.setStyle(this.elementRef.nativeElement, 'left', this.domRect.left+ "px" );
-      // this.setPositionAndDimension();
+      this.domRect.top = (this.elementRef.nativeElement.offsetTop - this.pos2);
+      this.domRect.y = this.domRect.top;
+      this.domRect.left = (this.elementRef.nativeElement.offsetLeft - this.pos1);
+      this.domRect.x  = this.domRect.left ;
+      this.renderer.setStyle(this.elementRef.nativeElement, 'top', this.domRect.top + "px");
+      this.renderer.setStyle(this.elementRef.nativeElement, 'left', this.domRect.left + "px");
+      this.renderer.setStyle(this.elementRef.nativeElement, 'x', this.domRect.x + "px");
+      this.renderer.setStyle(this.elementRef.nativeElement, 'y', this.domRect.y + "px");
       this.itemDropped.emit(this.domRect);
+      // this.setPositionAndDimension();
+      // this.setDimension();
     }
 
   }
