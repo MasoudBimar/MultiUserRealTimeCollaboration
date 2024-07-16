@@ -3,7 +3,6 @@ import { Utility } from "../utility/utility";
 export class CustomizableModel {
   id: string;
   itemType: FormEditorTypeEnum = FormEditorTypeEnum.Input;
-  // componentInputs: Partial<Record<keyof ComponentInput, unknown>>;
   name?: string;
   title?: string;
   description?: string;
@@ -30,16 +29,18 @@ export class CustomizableModel {
 export class DomRectModel {
   bottom: number = 0;
   height: number;
-  left: number = 0;
   right: number = 0;
-  top: number = 0;
   width: number;
   x: number;
   y: number;
+  left: number;
+  top: number;
 
   constructor(x: number, y: number, width: number, height: number) {
     this.x = x;
     this.y = y;
+    this.top = y;
+    this.left = x;
     this.width = width;
     this.height = height;
   }

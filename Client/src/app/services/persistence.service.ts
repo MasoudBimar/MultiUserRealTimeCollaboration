@@ -11,7 +11,6 @@ export class PersistenceService<T> {
   }
 
   persistDoc2(document: Map<string, T>, docName: string) {
-    console.log(Utility.stringify(document));
     const obj: Record<string, T> = {};
     document.forEach((value: T, key: string) => {
       obj[key] = value;

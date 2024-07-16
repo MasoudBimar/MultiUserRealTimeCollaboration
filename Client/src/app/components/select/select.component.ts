@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BaseCustomizableComponent } from '../base-customizable/base-customizable.component';
 
 @Component({
@@ -8,9 +8,5 @@ import { BaseCustomizableComponent } from '../base-customizable/base-customizabl
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
 })
-export class SelectComponent extends BaseCustomizableComponent implements OnInit {
-
-  ngOnInit(): void {
-    console.log('##############################')
-  }
+export class SelectComponent extends BaseCustomizableComponent {
 }

@@ -1,15 +1,17 @@
-import { ComponentRef, EnvironmentInjector, inject, Injectable, Type, ViewContainerRef } from "@angular/core";
-import { debounce, distinctUntilChanged, interval } from "rxjs";
+import { ComponentRef, DestroyRef, EnvironmentInjector, inject, Injectable, ViewContainerRef } from "@angular/core";
+import { debounce, interval } from "rxjs";
 import { BaseCustomizableComponent } from "../components/base-customizable/base-customizable.component";
 import { CustomizableModel, DomRectModel } from "../model/customizable.model";
 import { Utility } from "../utility/utility";
 import { NewCRDTWSService } from "./new-crdt-ws.service";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Injectable({ providedIn: 'root' })
 export class ComponentLoaderService {
   rootViewContainer?: ViewContainerRef;
   envInjector = inject(EnvironmentInjector);
+  destroyRef = inject(DestroyRef)
   components: Map<string, ComponentRef<unknown>> = new Map<string, ComponentRef<unknown>>;
   /**
    *
@@ -22,35 +24,33 @@ export class ComponentLoaderService {
   }
   addDynamicComponent(item: CustomizableModel, key: string) {
 
-    if (this.components.get(key)) {
-      this.components.get(key)?.destroy();
-      this.components.delete(key);
-    }
-
     if (this.rootViewContainer) {
-      const componentref = this.rootViewContainer.createComponent(Utility.componentTypeResolver(item.itemType), {
-        environmentInjector: this.envInjector,
-      });
+      let componentref = this.components.get(key)
+      if (!componentref) {
+        componentref = this.rootViewContainer.createComponent(Utility.componentTypeResolver(item.itemType), {
+          environmentInjector: this.envInjector,
+        });
 
-      (componentref.instance as BaseCustomizableComponent).itemDropped.subscribe((event: DomRectModel) => {
+        (componentref.instance as BaseCustomizableComponent).itemDropped.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event: DomRectModel) => {
           this.crdtwsService.updateItem(key, event);
         });
-      (componentref.instance as BaseCustomizableComponent).itemResized.pipe(
-        debounce(() => interval(100)))
-        .subscribe((event: DomRectModel) => {
-          this.crdtwsService.updateItem(key, event);
+        (componentref.instance as BaseCustomizableComponent).itemResized.pipe(
+          takeUntilDestroyed(this.destroyRef),
+          debounce(() => interval(100)))
+          .subscribe((event: DomRectModel) => {
+            this.crdtwsService.updateItem(key, event);
+          });
+        (componentref.instance as BaseCustomizableComponent).itemRemoved.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+          if (this.crdtwsService.document) {
+            this.components.get(key)?.destroy();
+          }
+          this.crdtwsService.delete(key);
         });
-      (componentref.instance as BaseCustomizableComponent).itemRemoved.subscribe(() => {
-        if (this.crdtwsService.document) {
-          this.components.get(key)?.destroy();
-        }
-        this.crdtwsService.delete(key);
-      });
-
+      }
       Object.entries(item).forEach(([key, value]) => {
         componentref.setInput(key, value);
       });
-
+      componentref.changeDetectorRef.detectChanges();
       this.components.set(key, componentref);
     }
   }

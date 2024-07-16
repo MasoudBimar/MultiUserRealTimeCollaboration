@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { EventService } from '../services/event.service';
-import { CustomizableModel, Message } from './../model/customizable.model';
+import { CustomizableModel, DomRectModel, Message } from './../model/customizable.model';
 import { ComponentLoaderService } from './../services/component-loader.service';
 import { NewCRDTWSService } from './../services/new-crdt-ws.service';
 import { PersistenceService } from './../services/persistence.service';
@@ -72,17 +72,6 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
     // this.webSocketSubscription.unsubscribe();
   }
 
-  clearBorad() {
-    // this.crdtwsService.clear();
-    // if (this.array.length > 0) {
-    //   this.array[1].destroy();
-    // }
-  }
-
-  // deleteItem(idx: string) {
-  //   this.crdtwsService.delete(idx);
-  // }
-
   toggleConnection() {
     if (this.crdtwsService.websocketService.connectionStatus) {
       this.crdtwsService.close();
@@ -93,6 +82,21 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
     if (res) {
       this.document = new Map<string, CustomizableModel>(res.entries());
     }
+  }
+
+  allowDrop(ev: any) {
+    ev.preventDefault();
+  }
+
+  drop(ev: any) {
+    if (ev.dataTransfer.getData("Text")) {
+      const newItem = new CustomizableModel();
+      newItem.domRect = new DomRectModel(ev.offsetX, ev.offsetY, 300, 100)
+      newItem.itemType = ev.dataTransfer.getData("Text");
+      this.crdtwsService.insert(newItem);
+      this.componentLoaderService.addDynamicComponent(newItem, newItem.id);
+    }
+    ev.preventDefault();
   }
 }
 
