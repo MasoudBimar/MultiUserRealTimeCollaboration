@@ -5,7 +5,6 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
 import { Message } from '../model/customizable.model';
 
-// https://rxjs-course.dev/course/subject-variants/websocket-subject/
 @Injectable({
   providedIn: 'root'
 })
@@ -40,7 +39,6 @@ export class NewWebSocketService<T> {
   }
 
   sendMessage(message: Message<T>): void {
-    console.log("🚀 ~ NewCRDTWSService<T ~ seeeeeeeeeeend mmmmmmmmmmmessage:", message)
     this.webSocket$?.next(message);
   }
 

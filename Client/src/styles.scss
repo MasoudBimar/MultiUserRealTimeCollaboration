@@ -18,6 +18,34 @@ body {
   --mdc-snackbar-container-color: #c93945;
 }
 
+.setting.icon {
+  color: blue;
+  position: absolute;
+  margin-left: 4px;
+  margin-top: 11px;
+  background-color: #000;
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    width: 17px;
+    height: 2px;
+    background-color: #000;
+    background-color: currentColor;
+  }
+
+  &:before {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+  }
+}
+
 .remove.icon {
   color: red;
   position: absolute;
@@ -54,6 +82,24 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
+  color: red;
+
+  &:hover {
+    background-color: #b0a8a8;
+  }
+}
+
+.setting-handler {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  cursor: pointer;
+  width: 38px;
+  height: 24px;
+  border-radius: 30%;
+  color: green;
+  font-size: 12px;
+  font-weight: bold;
   &:hover {
     background-color: #b0a8a8;
   }
@@ -71,8 +117,9 @@ body {
   border: 2px solid #fff;
   z-index: 10;
   position: absolute;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
+
 .ew-resize.right {
   top: 50%;
   left: 100%;
@@ -97,16 +144,15 @@ body {
   cursor: ns-resize;
 }
 
-.example-box {
+.cusomizable-box {
   cursor: move;
   position: absolute;
   z-index: 1;
   background-color: transparent;
-  // box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-  //   0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
 }
 
-.example-box:active {
+.cusomizable-box:hover {
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
@@ -117,6 +163,7 @@ body {
   display: inline-block;
   margin: 10px;
 }
-.app-side-bar{
+
+.app-side-bar {
   top: 50px;
 }

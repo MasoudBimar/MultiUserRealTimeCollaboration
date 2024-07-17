@@ -5,6 +5,7 @@ import { CustomizableModel, DomRectModel } from "../model/customizable.model";
 import { Utility } from "../utility/utility";
 import { NewCRDTWSService } from "./new-crdt-ws.service";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EventService } from "./event.service";
 
 
 @Injectable({ providedIn: 'root' })
@@ -16,7 +17,7 @@ export class ComponentLoaderService {
   /**
    *
    */
-  constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>) {
+  constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>,public eventService: EventService) {
   }
 
   setViewContainerRef(viewContainerRef: ViewContainerRef) {
@@ -29,22 +30,27 @@ export class ComponentLoaderService {
       if (!componentref) {
         componentref = this.rootViewContainer.createComponent(Utility.componentTypeResolver(item.itemType), {
           environmentInjector: this.envInjector,
+
         });
 
         (componentref.instance as BaseCustomizableComponent).itemDropped.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event: DomRectModel) => {
-          this.crdtwsService.updateItem(key, event);
+          this.crdtwsService.updateItem(key, {domRect: event} );
         });
         (componentref.instance as BaseCustomizableComponent).itemResized.pipe(
           takeUntilDestroyed(this.destroyRef),
           debounce(() => interval(100)))
           .subscribe((event: DomRectModel) => {
-            this.crdtwsService.updateItem(key, event);
+            this.crdtwsService.updateItem(key, {domRect: event});
           });
         (componentref.instance as BaseCustomizableComponent).itemRemoved.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
           if (this.crdtwsService.document) {
             this.components.get(key)?.destroy();
           }
           this.crdtwsService.delete(key);
+        });
+
+        (componentref.instance as BaseCustomizableComponent).itemSetting.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+          this.eventService.openSetting.emit(key);
         });
       }
       Object.entries(item).forEach(([key, value]) => {

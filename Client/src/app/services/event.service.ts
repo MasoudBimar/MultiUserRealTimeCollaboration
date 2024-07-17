@@ -8,4 +8,5 @@ export class EventService {
   itemRemoved: EventEmitter<CustomizableModel> = new EventEmitter<CustomizableModel>();
   resetDesigner: EventEmitter<void> = new EventEmitter<void>();
   connectionChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+  openSetting: EventEmitter<string> = new EventEmitter<string>();
 }

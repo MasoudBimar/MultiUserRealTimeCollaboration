@@ -1,20 +1,16 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, Renderer2 } from '@angular/core';
-import { CustomizableModel, DomRectModel } from '../../model/customizable.model';
-import { NewCRDTWSService } from '../../services/new-crdt-ws.service';
+import { DomRectModel } from '../../model/customizable.model';
 
 @Component({
-  selector: 'app-base-customizable',
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: '[appCustomizable]',
   standalone: true,
   imports: [],
   template: '',
   styles: '',
-  // inputs: ['id', 'direction', 'width', 'type', 'name', 'lable'],
-  // outputs: ['itemResized', 'itemDropped', 'itemRemoved' ] ,
 })
 export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   @Input({ required: true }) id!: string;
-  @Input() direction: "ltr" | "rtl" = 'ltr';
-  @Input() width: string = '250px';
   @Input() type: 'text' | 'number' = 'text';
   @Input() name: string = 'name';
   @Input() label: string = 'label';
@@ -23,13 +19,13 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   @Input() labelPosition: "default" | "start" | "top" = 'top';
   @Input() disabled: boolean = false;
   @Input() value: any = 'test';
-  @Input() itemType: any = 'test';
-  // ==================================================================================
+  @Input() itemType: string = 'input';
   @Input({ required: true }) domRect!: DomRectModel;
 
   @Output() itemResized: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();
   @Output() itemDropped: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();
-  @Output() itemRemoved: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();
+  @Output() itemRemoved: EventEmitter<void> = new EventEmitter<void>();
+  @Output() itemSetting: EventEmitter<string> = new EventEmitter<string>();
   previousSize: DomRectModel= { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0, x: 0, y: 0 };
   customizers: ElementRef<HTMLElement>[] = [];
   isResizing = false;
@@ -40,9 +36,8 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   constructor(
     private elementRef: ElementRef<HTMLElement>,
     private renderer: Renderer2,
-    public crdtwsService: NewCRDTWSService<CustomizableModel>
   ) {
-    this.renderer.addClass(elementRef.nativeElement, 'example-box');
+    this.renderer.addClass(elementRef.nativeElement, 'cusomizable-box');
   }
 
   @HostListener('mousedown', ['$event'])
@@ -76,6 +71,7 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
     this.customizers.push(this.createResizers('ew-resize', 'horizontal', 'left'));
     this.customizers.push(this.createResizers('ns-resize', 'vertical', 'top'));
     this.addRemoveHandler();
+    this.addSettingHandler();
     this.customizers.forEach((single) => {
       this.renderer.appendChild(this.elementRef.nativeElement, single.nativeElement);
     });
@@ -141,8 +137,6 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
       this.domRect.y = this.domRect.top;
       this.domRect.left = (this.elementRef.nativeElement.offsetLeft + dx);
       this.domRect.x = this.domRect.left;
-      // this.renderer.setStyle(this.elementRef.nativeElement, 'top', this.domRect.top + "px");
-      // this.renderer.setStyle(this.elementRef.nativeElement, 'left', this.domRect.left + "px");
       this.setPreviousCursorPosition(e);
       this.setDimension();
       this.itemDropped.emit(this.domRect);
@@ -185,6 +179,19 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
     this.renderer.addClass(removeIconElement, 'icon');
     this.renderer.listen(removeHandlerElement, 'click', () => {
       this.itemRemoved.emit();
+    });
+    this.renderer.appendChild(removeHandlerElement, removeIconElement);
+    this.renderer.appendChild(this.elementRef.nativeElement, removeHandlerElement);
+    this.customizers.push(new ElementRef(removeHandlerElement));
+  }
+
+  addSettingHandler() {
+    const removeHandlerElement = this.renderer.createElement('div');
+    this.renderer.addClass(removeHandlerElement, 'setting-handler');
+    const removeIconElement = this.renderer.createElement('div');
+    this.renderer.setProperty(removeIconElement, 'textContent', 'setting');
+    this.renderer.listen(removeHandlerElement, 'click', () => {
+      this.itemSetting.emit();
     });
     this.renderer.appendChild(removeHandlerElement, removeIconElement);
     this.renderer.appendChild(this.elementRef.nativeElement, removeHandlerElement);

@@ -1,9 +1,9 @@
-<mat-sidenav-container class="example-container">
+<mat-sidenav-container class="main-container">
 
   <mat-sidenav #sidenav [mode]="mode.value || 'over'" [opened]="true">
     <button mat-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon> Toggle</button>
     <button mat-button>{{connestionStatus ? 'connected' : 'disconnected'}}</button>
-    <mat-grid-list cols="2" rowHeight="80px">
+    <mat-grid-list cols="2" rowHeight="130px">
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'input')">
           <span class="sidebar-icon">
@@ -41,7 +41,7 @@
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'checkbox')">
           <span class="sidebar-icon">
-            <svg viewBox="0 0 1024 1024" height="40" width="150" fill="#1890ff" focusable="false" aria-hidden="true">
+            <svg viewBox="0 0 1024 1024" height="40" width="100" fill="#1890ff" focusable="false" aria-hidden="true">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <path
                   d="M282,162 L82,162 C54.3857625,162 32,184.385763 32,212 L32,412 C32,439.614237 54.3857625,462 82,462 L282,462 C309.614237,462 332,439.614237 332,412 L332,212 C332,184.385763 309.614237,162 282,162 Z M82,182 L282,182 C298.568542,182 312,195.431458 312,212 L312,412 C312,428.568542 298.568542,442 282,442 L82,442 C65.4314575,442 52,428.568542 52,412 L52,212 C52,195.431458 65.4314575,182 82,182 Z"
@@ -67,7 +67,7 @@
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'radio')">
           <span class="sidebar-icon">
-            <svg viewBox="0 0 1024 1024" height="40" width="150" fill="#1890ff" focusable="false" aria-hidden="true">
+            <svg viewBox="0 0 1024 1024" height="40" width="100" fill="#1890ff" focusable="false" aria-hidden="true">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <path
                   d="M182,172 C259.319865,172 322,234.680135 322,312 C322,389.319865 259.319865,452 182,452 C104.680135,452 42,389.319865 42,312 C42,234.680135 104.680135,172 182,172 Z M182,192 C115.72583,192 62,245.72583 62,312 C62,378.27417 115.72583,432 182,432 C248.27417,432 302,378.27417 302,312 C302,245.72583 248.27417,192 182,192 Z"
@@ -108,7 +108,7 @@
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'calendar')">
           <span class="sidebar-icon">
-            <svg viewBox="0 0 1024 1024" height="40" width="150" fill="#1890ff" focusable="false" aria-hidden="true">
+            <svg viewBox="0 0 1024 1024" height="40" width="100" fill="#1890ff" focusable="false" aria-hidden="true">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <rect fill="#999999" transform="translate(266.000000, 123.000000) scale(-1, 1) translate(-266.000000, -123.000000) " x="256" y="63"
                   width="20" height="120" rx="10"></rect>
@@ -144,7 +144,7 @@
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'select')">
           <span class="sidebar-icon">
-            <svg viewBox="0 0 1024 1024" height="40" width="150" fill="#1890ff" focusable="false" aria-hidden="true">
+            <svg viewBox="0 0 1024 1024" height="40" width="100" fill="#1890ff" focusable="false" aria-hidden="true">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <path
                   d="M944,0 C988.18278,0 1024,35.81722 1024,80 L1024,944 C1024,988.18278 988.18278,1024 944,1024 L80,1024 C35.81722,1024 0,988.18278 0,944 L0,80 C0,35.81722 35.81722,0 80,0 L944,0 Z M944,20 L80,20 C47.1942859,20 20.5378857,46.328343 20,79.0077903 L20,80 L20,944 C20,976.805714 46.328343,1003.46211 79.0077903,1004 L80,1004 L944,1004 C976.805714,1004 1003.46211,977.671657 1004,944.99221 L1004,944 L1004,80 C1004,47.1942859 977.671657,20.5378857 944.99221,20 L944,20 Z"
@@ -173,7 +173,7 @@
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'card')">
           <span class="sidebar-icon">
-            <svg viewBox="0 0 1024 1024" height="40" width="150" fill="#1890ff" focusable="false" aria-hidden="true">
+            <svg viewBox="0 0 1024 1024" height="40" width="100" fill="#1890ff" focusable="false" aria-hidden="true">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <path d="M65,17 L962,17 C990.718807,17 1014,40.281193 1014,69 L1014,267 L1014,267 L13,267 L13,69 C13,40.281193 36.281193,17 65,17 Z"
                   fill="#D8D8D8"></path>
@@ -198,7 +198,7 @@
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'button')">
           <span class="sidebar-icon">
-            <svg viewBox="0 0 1024 1024" height="40" width="150" fill="#1890ff" focusable="false" aria-hidden="true">
+            <svg viewBox="0 0 1024 1024" height="40" width="100" fill="#1890ff" focusable="false" aria-hidden="true">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <path
                   d="M764,252 C907.594035,252 1024,368.405965 1024,512 C1024,655.594035 907.594035,772 764,772 L260,772 C116.405965,772 0,655.594035 0,512 C0,368.405965 116.405965,252 260,252 L764,252 Z M764,272 L260,272 C127.45166,272 20,379.45166 20,512 C20,643.222857 125.313372,749.848457 256.031161,751.967847 L260,752 L764,752 C896.54834,752 1004,644.54834 1004,512 C1004,380.777143 898.686628,274.151543 767.968839,272.032153 L764,272 Z"
@@ -219,7 +219,7 @@
       <ng-container *ngIf="!sidenav.opened">
         <button mat-button (click)="sidenav.toggle()"> <mat-icon>menu</mat-icon> Toggle</button>
       </ng-container>
-      <button mat-button (click)="addNewElement()">Add New Item </button>
+      <!-- <button mat-button (click)="customiseElement()">Add New Item </button> -->
       <button mat-button (click)="clearBorad()">clear borad</button>
     </div>
     <ng-content></ng-content>

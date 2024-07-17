@@ -1,4 +1,3 @@
-// import { ComponentRef, Type } from "@angular/core";
 import { Utility } from "../utility/utility";
 export class CustomizableModel {
   id: string;
@@ -6,17 +5,12 @@ export class CustomizableModel {
   name?: string;
   title?: string;
   description?: string;
-  direction?: "ltr" | "rtl";
-  display?: 'block' | 'inline' | 'inline-block' | 'flex';
   type?: 'text' | 'number';
   label?: string;
   placeholder?: string;
   appearance?: 'fill' | 'outline';
-  labelPosition?: "default" | "start" | "top";
   disabled?: boolean;
   value?: any;
-  margin?: string;
-  padding?: string;
   domRect?: DomRectModel;
   constructor() {
 
@@ -58,31 +52,10 @@ export const enum FormEditorTypeEnum {
 
 }
 
-// export interface ComponentInput {
-//   id: string;
-//   name: string;
-//   title: string;
-//   description: string;
-//   direction: "ltr" | "rtl";
-//   width: string;
-//   height: string;
-//   display: 'block' | 'inline' | 'inline-block' | 'flex';
-//   type: 'text' | 'number';
-//   label: string;
-//   placeholder: string;
-//   appearance: 'fill' | 'outline';
-//   labelPosition: "default" | "start" | "top";
-//   disabled: boolean;
-//   value: any;
-//   margin: string;
-//   padding: string;
-//   domRect: DomRectModel;
-// }
 
 export interface Message<T> {
   type: 'add' | 'update' | 'remove';
   payload: T;
-
 }
 
 

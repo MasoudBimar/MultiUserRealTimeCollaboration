@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { DomRectModel } from '../model/customizable.model';
+import { EventService } from './event.service';
 import { NewWebSocketService } from './new-websocket.service';
 import { PersistenceService } from './persistence.service';
-import { EventService } from './event.service';
 
 @Injectable({ providedIn: 'root' })
-export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> {
+export class NewCRDTWSService<T extends { id: string }> {
   document?: Map<string, T>;
   docName: string = '';
   offlineUpdates = new Map<string, T>();
@@ -35,7 +34,7 @@ export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> 
 
   delete(id: string) {
     this.document?.delete(id);
-    this.websocketService.sendMessage({ type: 'remove', payload: { id: id, domRect: undefined } as T });
+    this.websocketService.sendMessage({ type: 'remove', payload: { id: id } as T });
     if (this.document) {
       this.persistenceService.persistDoc(this.document, this.docName);
     }
@@ -47,18 +46,18 @@ export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> 
   }
 
 
-  updateItem(id: string, model: DomRectModel) {
-
+  updateItem(id: string, model: Partial<T>) {
     const prevItem = this.document?.get(id);
     if (prevItem) {
-      prevItem.domRect = model;
-      this.document?.set(id, prevItem);
-      this.websocketService.sendMessage({ type: 'update', payload: prevItem });
+      const newItem = {...prevItem, ...model};
+      this.document?.set(id, newItem);
+      this.websocketService.sendMessage({ type: 'update', payload: newItem });
       if (this.document) {
         this.persistenceService.persistDoc(this.document, this.docName);
       }
     }
   }
+
 
   close() {
     this.websocketService.close();
@@ -66,7 +65,6 @@ export class NewCRDTWSService<T extends { id: string, domRect?: DomRectModel }> 
   }
 
   open() {
-    // this.websocketService.openConnection();
     if (!this.websocketService.connectionStatus) {
       this.websocketService.connect();
       this.eventService.connectionChanged.emit(true);
