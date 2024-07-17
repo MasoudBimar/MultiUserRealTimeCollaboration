@@ -11,9 +11,10 @@ export class CustomizableModel {
   appearance?: 'fill' | 'outline';
   disabled?: boolean;
   value?: any;
+  textContent = 'label';
   domRect?: DomRectModel;
   constructor() {
-
+    this.type = 'text';
     this.id = Utility.uuidv4();
     this.domRect = new DomRectModel(0, 0, 300, 100);
   }
@@ -44,10 +45,10 @@ export const enum FormEditorTypeEnum {
   Input = 'input',
   Calendar = 'calendar',
   Checkbox = 'checkbox',
-  Switch = 'switch',
+  Card = 'card',
   Radio = 'radio',
   Select = 'select',
-  TextArea = 'textArea',
+  TextArea = 'textarea',
   Button = 'button',
 
 }

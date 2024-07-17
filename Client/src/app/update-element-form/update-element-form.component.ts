@@ -43,11 +43,11 @@ export class UpdateElementFormComponent implements OnInit {
 
   crateConfigurationForm(): FormGroup {
     return new FormGroup({
-      'type': new FormControl(this.data.type, [Validators.required]),
-      'name': new FormControl(this.data.name, [Validators.required]),
-      'label': new FormControl(this.data.label, [Validators.required]),
-      'placeholder': new FormControl(this.data.placeholder, [Validators.required]),
-      'itemType': new FormControl(this.data.itemType, [Validators.required]),
+      'type': new FormControl(this.data.type),
+      'name': new FormControl(this.data.name),
+      'label': new FormControl(this.data.label),
+      'placeholder': new FormControl(this.data.placeholder),
+      'itemType': new FormControl({value: this.data.itemType, disabled: true}),
     });
   }
 }

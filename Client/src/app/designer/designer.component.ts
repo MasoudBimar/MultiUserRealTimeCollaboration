@@ -42,7 +42,23 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
 
     this.loadLocalDoc();
     this.crdtwsService.registerDocument(this.document, this.docName);
-    this.goLive();
+    const subscription = this.crdtwsService.websocketService.messages$.subscribe((message: Message<CustomizableModel>) => {
+      if (message.type === 'add' || message.type === 'update') {
+        if (message) {
+          this.document.set(message.payload.id, message.payload);
+          this.componentLoaderService.addDynamicComponent(message.payload, message.payload.id);
+        }
+      } else if (message.type === 'remove') {
+        if (message) {
+          this.document.delete(message.payload.id);
+          this.componentLoaderService.deleteDynamicComponent(message.payload, message.payload.id);
+        }
+      } else if (message.type === 'imalive') {
+        this.crdtwsService.sendDocument();
+      }
+
+    });
+    this.webSocketSubscription.push(subscription);
     this.eventService.itemAdded.subscribe((item: CustomizableModel) => {
       this.crdtwsService.insert(item);
       this.componentLoaderService.addDynamicComponent(item, item.id);
@@ -51,9 +67,6 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
     this.eventService.openSetting.subscribe((key: string) => {
       this.customizeElement(key);
     });
-    this.eventService.goLive.subscribe(() => {
-      this.goLive();
-    })
   }
   ngAfterViewInit(): void {
     if (this.componentRef) {
@@ -118,31 +131,6 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
         this.snackBarService.openError('Operation Failed', 'Ok');
       }
     });
-  }
-  goLive() {
-    if (!this.crdtwsService.isOnline) {
-      this.crdtwsService.open();
-    }
-    if (this.webSocketSubscription.length < 1 && this.crdtwsService.isOnline) {
-      const subscription = this.crdtwsService.websocketService.messages$.subscribe((message: Message<CustomizableModel>) => {
-        console.log("🚀 ~ DesignerComponent ~ this.crdtwsService.websocketService.messages$.subscribe ~ message:", message)
-        if (message.type === 'add' || message.type === 'update') {
-          if (message) {
-            this.document.set(message.payload.id, message.payload);
-            this.componentLoaderService.addDynamicComponent(message.payload, message.payload.id);
-          }
-        } else if (message.type === 'remove') {
-          if (message) {
-            this.document.delete(message.payload.id);
-            this.componentLoaderService.deleteDynamicComponent(message.payload, message.payload.id);
-          }
-        } else if (message.type === 'imalive') {
-          this.crdtwsService.sendDocument();
-        }
-
-      });
-      this.webSocketSubscription.push(subscription);
-    }
   }
 }
 

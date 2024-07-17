@@ -38,10 +38,6 @@ export class SidebarComponent {
 
   }
 
-  goLive() {
-    this.eventService.goLive.emit();
-  }
-
   clearBorad() {
     this.eventService.resetDesigner.emit();
   }

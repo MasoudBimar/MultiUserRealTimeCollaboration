@@ -151,6 +151,10 @@ export class Utility {
     return Utility.getComponentList().get(type) ?? CardComponent;
   }
 
+  static elementTypeResolver(type: string): string {
+    return Utility.getElementList().get(type) ?? 'input';
+  }
+
   static getComponentList(): Map<string, Type<unknown>> {
     const componentMapRegistery = new Map<string, Type<unknown>>();
     componentMapRegistery.set('input', InputComponent);
@@ -159,8 +163,20 @@ export class Utility {
     componentMapRegistery.set('card', CardComponent);
     componentMapRegistery.set('radio', RadioComponent);
     componentMapRegistery.set('select', SelectComponent);
-    componentMapRegistery.set('textArea', TextAreaComponent);
+    componentMapRegistery.set('textarea', TextAreaComponent);
     componentMapRegistery.set('button', ButtonComponent);
+    return componentMapRegistery;
+  }
+  static getElementList(): Map<string, string> {
+    const componentMapRegistery = new Map<string, string>();
+    componentMapRegistery.set('input', 'input');
+    componentMapRegistery.set('calendar', 'input');
+    componentMapRegistery.set('checkbox', 'input');
+    componentMapRegistery.set('card', 'article');
+    componentMapRegistery.set('radio', 'input');
+    componentMapRegistery.set('select', 'select');
+    componentMapRegistery.set('textarea', 'textarea');
+    componentMapRegistery.set('button', 'button');
     return componentMapRegistery;
   }
 

@@ -22,7 +22,7 @@
         </div>
       </mat-grid-tile>
       <mat-grid-tile>
-        <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'textArea')">
+        <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'textarea')">
           <span class="sidebar-icon">
             <svg viewBox="0 0 1024 1024" height="40" width="100" fill="#1890ff" focusable="false" aria-hidden="true">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -218,9 +218,6 @@
     <div class="toolbar">
       <ng-container *ngIf="!sidenav.opened">
         <button mat-button (click)="sidenav.toggle()"> <mat-icon>menu</mat-icon> Toggle</button>
-      </ng-container>
-      <ng-container *ngIf="!connestionStatus">
-        <button mat-button (click)="goLive()">Go Live </button>
       </ng-container>
       <button mat-button (click)="clearBorad()">Clear Designer</button>
     </div>

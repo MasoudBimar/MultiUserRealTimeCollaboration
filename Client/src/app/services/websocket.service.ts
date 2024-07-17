@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
-import { catchError, retry, switchAll, tap } from 'rxjs/operators';
+import { catchError, concatAll, retry, tap } from 'rxjs/operators';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
 import { Message } from '../model/customizable.model';
@@ -10,23 +10,20 @@ import { Message } from '../model/customizable.model';
 })
 export class WebSocketService<T> {
 
-  private webSocket$!: WebSocketSubject<Message<T>> | undefined;
+  private webSocket$?: WebSocketSubject<Message<T>> ;
 
   private messagesSubject$ = new BehaviorSubject<Observable<Message<T>>>(EMPTY);
 
-  public messages$ = this.messagesSubject$.pipe(switchAll(), catchError(e => { throw e }));
+  public messages$ = this.messagesSubject$.pipe(concatAll(), catchError(e => { throw e }));
   public connectionStatus = new BehaviorSubject<boolean>(false);
 
   public getNewWebSocket(): WebSocketSubject<Message<T>> {
     return webSocket({
       url: environment.wsServerUrl,
-      binaryType: 'arraybuffer',
       closeObserver: {
         next: () => {
           console.log('[websocket service] connection closed');
-          this.webSocket$ = undefined;
           this.connectionStatus.next(false);
-          this.connect({ reconnect: true });
         }
       },
       openObserver: {
@@ -39,7 +36,6 @@ export class WebSocketService<T> {
   }
 
   sendMessage(message: Message<T>): void {
-    console.log("🚀 ~ WebSocketService<T> ~ sendMessage ~ message:", message)
     this.webSocket$?.next(message);
   }
 
@@ -51,7 +47,8 @@ export class WebSocketService<T> {
     if (!this.webSocket$ || this.webSocket$.closed) {
       this.webSocket$ = this.getNewWebSocket();
       const messages = this.webSocket$.pipe(config.reconnect ? this.reconnect : o => o,
-        tap({ error: error => console.log(error) }), catchError(() => EMPTY));
+        tap({ error: error => console.log(error) }), catchError(() => EMPTY)
+      );
       this.messagesSubject$.next(messages);
     }
   }

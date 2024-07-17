@@ -21,6 +21,7 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   @Input() value: any = 'test';
   @Input() itemType: string = 'input';
   @Input({ required: true }) domRect!: DomRectModel;
+  @Input() textContent = 'text';
 
   @Output() itemResized: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();
   @Output() itemDropped: EventEmitter<DomRectModel> = new EventEmitter<DomRectModel>();

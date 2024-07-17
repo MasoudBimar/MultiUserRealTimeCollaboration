@@ -1,4 +1,4 @@
 export const environment = {
   wsServerUrl: 'ws://localhost:8080',
-  reconnectInterval: 3000
+  reconnectInterval: 5000
 };

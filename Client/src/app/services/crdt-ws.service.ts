@@ -25,7 +25,7 @@ export class CRDTWSService<T extends { id: string }> {
   registerDocument(doc: Map<string, T>, docName: string) {
     this.document = doc;
     this.docName = docName;
-    this.websocketService.connect();
+    this.open();
   }
 
   insert(newItem: T) {
@@ -73,7 +73,7 @@ export class CRDTWSService<T extends { id: string }> {
   open() {
     if (!this.isOnline) {
       this.websocketService.connect({reconnect: true});
-      this.websocketService.sendMessage({ type: 'imalive' });
+      // this.websocketService.sendMessage({ type: 'imalive' });
     }
   }
 

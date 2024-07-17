@@ -1,4 +1,4 @@
-import { ComponentRef, DestroyRef, EnvironmentInjector, inject, Injectable, ViewContainerRef } from "@angular/core";
+import { ComponentRef, createComponent, DestroyRef, EnvironmentInjector, inject, Injectable, Injector, ViewContainerRef } from "@angular/core";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseCustomizableComponent } from "@app-components";
 import {
@@ -11,10 +11,11 @@ import { Utility } from "../utility/utility";
 
 
 @Injectable({ providedIn: 'root' })
-export class ComponentLoaderService {
+export class ComponentLoader2Service {
   rootViewContainer?: ViewContainerRef;
   envInjector = inject(EnvironmentInjector);
-  destroyRef = inject(DestroyRef)
+  destroyRef = inject(DestroyRef);
+  injector = inject(Injector);
   components: Map<string, ComponentRef<unknown>> = new Map<string, ComponentRef<unknown>>;
   /**
    *
@@ -30,9 +31,8 @@ export class ComponentLoaderService {
     if (this.rootViewContainer) {
       let componentref = this.components.get(key)
       if (!componentref) {
-        componentref = this.rootViewContainer.createComponent(Utility.componentTypeResolver(item.itemType), {
-          environmentInjector: this.envInjector,
-        });
+        const hostElement = document.createElement(Utility.elementTypeResolver(item.itemType));
+        componentref = createComponent(BaseCustomizableComponent, { hostElement, environmentInjector: this.envInjector, elementInjector: this.injector });
 
         (componentref.instance as BaseCustomizableComponent).itemDropped.pipe(
           takeUntilDestroyed(this.destroyRef)
@@ -59,6 +59,8 @@ export class ComponentLoaderService {
       Object.entries(item).forEach(([key, value]) => {
         componentref.setInput(key, value);
       });
+
+      this.rootViewContainer.insert(componentref.hostView);
       componentref.changeDetectorRef.detectChanges();
       this.components.set(key, componentref);
     }
