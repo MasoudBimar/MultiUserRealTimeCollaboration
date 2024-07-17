@@ -59,13 +59,6 @@ export class Utility {
 
   }
 
-  static calculateClientRect(element: HTMLElement) {
-    const rect = element.getBoundingClientRect();
-    rect.width = 250;
-    rect.height = 250;
-    return rect;
-  }
-
   static uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
       .replace(/[xy]/g, function (c) {

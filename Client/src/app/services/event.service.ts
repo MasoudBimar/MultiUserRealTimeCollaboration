@@ -9,4 +9,5 @@ export class EventService {
   resetDesigner: EventEmitter<void> = new EventEmitter<void>();
   connectionChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
   openSetting: EventEmitter<string> = new EventEmitter<string>();
+  goLive: EventEmitter<void> = new EventEmitter<void>();
 }

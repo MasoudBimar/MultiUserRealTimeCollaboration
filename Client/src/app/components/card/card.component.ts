@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { BaseCustomizableComponent } from '../base-customizable/base-customizable.component';
+import { BaseCustomizableComponent } from '@app-components';
 
 @Component({
   selector: 'app-card',

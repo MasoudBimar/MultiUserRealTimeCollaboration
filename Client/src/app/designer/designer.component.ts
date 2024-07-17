@@ -1,28 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
+import { BaseCustomizableComponent } from '@app-components';
+import {
+  ComponentLoaderService,
+  CRDTWSService,
+  EventService,
+  PersistenceService,
+  SnackBarService,
+} from '@app-services';
 import { Subscription } from 'rxjs';
-import { BaseCustomizableComponent } from '../components/base-customizable/base-customizable.component';
-import { ButtonComponent } from '../components/button/button.component';
-import { EventService } from '../services/event.service';
-import { SnackBarService } from '../services/snackbar.service';
 import { UpdateElementFormComponent } from '../update-element-form/update-element-form.component';
 import { CustomizableModel, DomRectModel, Message } from './../model/customizable.model';
-import { ComponentLoaderService } from './../services/component-loader.service';
-import { NewCRDTWSService } from './../services/new-crdt-ws.service';
-import { PersistenceService } from './../services/persistence.service';
+
+
 @Component({
   selector: 'app-designer',
   standalone: true,
   imports: [
-    MatInputModule,
     CommonModule,
-    MatButtonModule,
     FormsModule,
-    ButtonComponent,
     BaseCustomizableComponent
   ],
   templateUrl: './designer.component.html',
@@ -34,7 +32,7 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
   webSocketSubscription: Subscription[] = [];
   @ViewChild("componentRef", { read: ViewContainerRef }) componentRef?: ViewContainerRef;
   constructor(
-    public crdtwsService: NewCRDTWSService<CustomizableModel>,
+    public crdtwsService: CRDTWSService<CustomizableModel>,
     public dialog: MatDialog,
     public persistenceService: PersistenceService<CustomizableModel>,
     public componentLoaderService: ComponentLoaderService,
@@ -44,20 +42,7 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
 
     this.loadLocalDoc();
     this.crdtwsService.registerDocument(this.document, this.docName);
-    this.crdtwsService.websocketService.messages$.subscribe((message: Message<CustomizableModel>) => {
-      if (message.type === 'add' || message.type === 'update') {
-        if (message) {
-          this.document.set(message.payload.id, message.payload);
-          this.componentLoaderService.addDynamicComponent(message.payload, message.payload.id);
-        }
-      } else if (message.type === 'remove') {
-        if (message) {
-          this.document.delete(message.payload.id);
-          this.componentLoaderService.deleteDynamicComponent(message.payload, message.payload.id);
-        }
-      }
-
-    });
+    this.goLive();
     this.eventService.itemAdded.subscribe((item: CustomizableModel) => {
       this.crdtwsService.insert(item);
       this.componentLoaderService.addDynamicComponent(item, item.id);
@@ -66,6 +51,9 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
     this.eventService.openSetting.subscribe((key: string) => {
       this.customizeElement(key);
     });
+    this.eventService.goLive.subscribe(() => {
+      this.goLive();
+    })
   }
   ngAfterViewInit(): void {
     if (this.componentRef) {
@@ -84,11 +72,6 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
     });
   }
 
-  toggleConnection() {
-    if (this.crdtwsService.websocketService.connectionStatus) {
-      this.crdtwsService.close();
-    }
-  }
   loadLocalDoc() {
     const res: Map<string, CustomizableModel> = this.persistenceService.loadDoc(this.docName);
     if (res) {
@@ -127,7 +110,7 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
           item.label = response.label;
           item.placeholder = response.placeholder;
           item.itemType = response.itemType;
-          this.crdtwsService.updateItem(key,response);
+          this.crdtwsService.updateItem(key, response);
           this.componentLoaderService.addDynamicComponent(item, item.id);
         }
         this.snackBarService.openSuccess('Item Updated', 'Ok');
@@ -135,6 +118,31 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
         this.snackBarService.openError('Operation Failed', 'Ok');
       }
     });
+  }
+  goLive() {
+    if (!this.crdtwsService.isOnline) {
+      this.crdtwsService.open();
+    }
+    if (this.webSocketSubscription.length < 1 && this.crdtwsService.isOnline) {
+      const subscription = this.crdtwsService.websocketService.messages$.subscribe((message: Message<CustomizableModel>) => {
+        console.log("🚀 ~ DesignerComponent ~ this.crdtwsService.websocketService.messages$.subscribe ~ message:", message)
+        if (message.type === 'add' || message.type === 'update') {
+          if (message) {
+            this.document.set(message.payload.id, message.payload);
+            this.componentLoaderService.addDynamicComponent(message.payload, message.payload.id);
+          }
+        } else if (message.type === 'remove') {
+          if (message) {
+            this.document.delete(message.payload.id);
+            this.componentLoaderService.deleteDynamicComponent(message.payload, message.payload.id);
+          }
+        } else if (message.type === 'imalive') {
+          this.crdtwsService.sendDocument();
+        }
+
+      });
+      this.webSocketSubscription.push(subscription);
+    }
   }
 }
 

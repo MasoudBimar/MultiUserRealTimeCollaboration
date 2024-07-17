@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, timer } from 'rxjs';
-import { catchError, concatAll, delayWhen, retryWhen, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
+import { catchError, retry, switchAll, tap } from 'rxjs/operators';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
 import { Message } from '../model/customizable.model';
@@ -8,14 +8,14 @@ import { Message } from '../model/customizable.model';
 @Injectable({
   providedIn: 'root'
 })
-export class NewWebSocketService<T> {
+export class WebSocketService<T> {
 
   private webSocket$!: WebSocketSubject<Message<T>> | undefined;
 
   private messagesSubject$ = new BehaviorSubject<Observable<Message<T>>>(EMPTY);
 
-  public messages$ = this.messagesSubject$.pipe(concatAll(), catchError(e => { throw e }));
-  connectionStatus = false;
+  public messages$ = this.messagesSubject$.pipe(switchAll(), catchError(e => { throw e }));
+  public connectionStatus = new BehaviorSubject<boolean>(false);
 
   public getNewWebSocket(): WebSocketSubject<Message<T>> {
     return webSocket({
@@ -25,13 +25,13 @@ export class NewWebSocketService<T> {
         next: () => {
           console.log('[websocket service] connection closed');
           this.webSocket$ = undefined;
-          this.connectionStatus = false;
+          this.connectionStatus.next(false);
           this.connect({ reconnect: true });
         }
       },
       openObserver: {
         next: () => {
-          this.connectionStatus = true;
+          this.connectionStatus.next(true);
           console.log('[websocket service] connection opened');
         }
       }
@@ -39,6 +39,7 @@ export class NewWebSocketService<T> {
   }
 
   sendMessage(message: Message<T>): void {
+    console.log("🚀 ~ WebSocketService<T> ~ sendMessage ~ message:", message)
     this.webSocket$?.next(message);
   }
 
@@ -56,7 +57,9 @@ export class NewWebSocketService<T> {
   }
 
   private reconnect(observable: Observable<Message<T>>): Observable<Message<T>> {
-    return observable.pipe(retryWhen(errors => errors.pipe(tap(val => console.log('[websocket service] try to connect', val)),
-      delayWhen(() => timer(environment.reconnectInterval)))));
+    return observable.pipe(
+      retry({ count: 10, delay: environment.reconnectInterval }),
+      tap({ error: error => console.log('[websocket service] try to connect', error) })
+    );
   }
 }

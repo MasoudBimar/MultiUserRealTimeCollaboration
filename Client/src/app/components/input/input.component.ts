@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseCustomizableComponent } from '../base-customizable/base-customizable.component';
+import { BaseCustomizableComponent } from '@app-components';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';

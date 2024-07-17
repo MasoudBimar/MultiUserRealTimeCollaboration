@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseCustomizableComponent } from '../base-customizable/base-customizable.component';
+import { BaseCustomizableComponent } from '@app-components';
 
 @Component({
   selector: 'app-text-area',

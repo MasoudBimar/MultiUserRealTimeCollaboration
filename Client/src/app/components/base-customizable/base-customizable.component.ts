@@ -174,9 +174,9 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   addRemoveHandler() {
     const removeHandlerElement = this.renderer.createElement('div');
     this.renderer.addClass(removeHandlerElement, 'remove-handler');
-    const removeIconElement = this.renderer.createElement('div');
-    this.renderer.addClass(removeIconElement, 'remove');
-    this.renderer.addClass(removeIconElement, 'icon');
+    const removeIconElement = this.renderer.createElement('i');
+    this.renderer.addClass(removeIconElement, 'material-icons');
+    this.renderer.setProperty(removeIconElement, 'textContent', 'delete');
     this.renderer.listen(removeHandlerElement, 'click', () => {
       this.itemRemoved.emit();
     });
@@ -186,16 +186,17 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   }
 
   addSettingHandler() {
-    const removeHandlerElement = this.renderer.createElement('div');
-    this.renderer.addClass(removeHandlerElement, 'setting-handler');
-    const removeIconElement = this.renderer.createElement('div');
-    this.renderer.setProperty(removeIconElement, 'textContent', 'setting');
-    this.renderer.listen(removeHandlerElement, 'click', () => {
+    const settingHandlerElement = this.renderer.createElement('div');
+    this.renderer.addClass(settingHandlerElement, 'setting-handler');
+    const settingIconElement = this.renderer.createElement('i');
+    this.renderer.addClass(settingIconElement, 'material-icons');
+    this.renderer.setProperty(settingIconElement, 'textContent', 'settings');
+    this.renderer.listen(settingHandlerElement, 'click', () => {
       this.itemSetting.emit();
     });
-    this.renderer.appendChild(removeHandlerElement, removeIconElement);
-    this.renderer.appendChild(this.elementRef.nativeElement, removeHandlerElement);
-    this.customizers.push(new ElementRef(removeHandlerElement));
+    this.renderer.appendChild(settingHandlerElement, settingIconElement);
+    this.renderer.appendChild(this.elementRef.nativeElement, settingHandlerElement);
+    this.customizers.push(new ElementRef(settingHandlerElement));
   }
 
   ngOnChanges() {

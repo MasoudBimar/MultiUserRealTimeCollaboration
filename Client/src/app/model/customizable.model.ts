@@ -52,10 +52,25 @@ export const enum FormEditorTypeEnum {
 
 }
 
+export interface AddMessage<T> {
+  type: 'add',
+  payload: T
+}
 
-export interface Message<T> {
-  type: 'add' | 'update' | 'remove';
+export interface UpdateMessage<T> {
+  type: 'update',
+  payload: T
+}
+
+export interface RemoveMessage<T> {
+  type: 'remove',
   payload: T;
 }
+
+export interface AliveMessage {
+  type: 'imalive',
+}
+
+export type Message<T> = AddMessage<T> | UpdateMessage<T> | RemoveMessage<T> | AliveMessage;
 
 

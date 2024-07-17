@@ -38,13 +38,15 @@ export class SidebarComponent {
 
   }
 
-
+  goLive() {
+    this.eventService.goLive.emit();
+  }
 
   clearBorad() {
     this.eventService.resetDesigner.emit();
   }
 
-  drag(event: DragEvent, data: string){
+  drag(event: DragEvent, data: string) {
     event?.dataTransfer?.setData("Text", data);
   }
 }

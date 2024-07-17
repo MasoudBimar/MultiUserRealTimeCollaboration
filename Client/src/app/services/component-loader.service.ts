@@ -1,11 +1,13 @@
 import { ComponentRef, DestroyRef, EnvironmentInjector, inject, Injectable, ViewContainerRef } from "@angular/core";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BaseCustomizableComponent } from "@app-components";
+import {
+  CRDTWSService,
+  EventService
+} from "@app-services";
 import { debounce, interval } from "rxjs";
-import { BaseCustomizableComponent } from "../components/base-customizable/base-customizable.component";
 import { CustomizableModel, DomRectModel } from "../model/customizable.model";
 import { Utility } from "../utility/utility";
-import { NewCRDTWSService } from "./new-crdt-ws.service";
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EventService } from "./event.service";
 
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +19,7 @@ export class ComponentLoaderService {
   /**
    *
    */
-  constructor(public crdtwsService: NewCRDTWSService<CustomizableModel>,public eventService: EventService) {
+  constructor(public crdtwsService: CRDTWSService<CustomizableModel>, public eventService: EventService) {
   }
 
   setViewContainerRef(viewContainerRef: ViewContainerRef) {
@@ -33,14 +35,16 @@ export class ComponentLoaderService {
 
         });
 
-        (componentref.instance as BaseCustomizableComponent).itemDropped.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event: DomRectModel) => {
-          this.crdtwsService.updateItem(key, {domRect: event} );
+        (componentref.instance as BaseCustomizableComponent).itemDropped.pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe((event: DomRectModel) => {
+          this.crdtwsService.updateItem(key, { domRect: event });
         });
         (componentref.instance as BaseCustomizableComponent).itemResized.pipe(
           takeUntilDestroyed(this.destroyRef),
           debounce(() => interval(100)))
           .subscribe((event: DomRectModel) => {
-            this.crdtwsService.updateItem(key, {domRect: event});
+            this.crdtwsService.updateItem(key, { domRect: event });
           });
         (componentref.instance as BaseCustomizableComponent).itemRemoved.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
           if (this.crdtwsService.document) {

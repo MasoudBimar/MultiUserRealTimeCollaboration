@@ -219,8 +219,10 @@
       <ng-container *ngIf="!sidenav.opened">
         <button mat-button (click)="sidenav.toggle()"> <mat-icon>menu</mat-icon> Toggle</button>
       </ng-container>
-      <!-- <button mat-button (click)="customiseElement()">Add New Item </button> -->
-      <button mat-button (click)="clearBorad()">clear borad</button>
+      <ng-container *ngIf="!connestionStatus">
+        <button mat-button (click)="goLive()">Go Live </button>
+      </ng-container>
+      <button mat-button (click)="clearBorad()">Clear Designer</button>
     </div>
     <ng-content></ng-content>
   </mat-sidenav-content>
