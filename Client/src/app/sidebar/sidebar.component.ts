@@ -38,10 +38,6 @@ export class SidebarComponent {
 
   }
 
-  clearBorad() {
-    this.eventService.resetDesigner.emit();
-  }
-
   drag(event: DragEvent, data: string) {
     event?.dataTransfer?.setData("Text", data);
   }

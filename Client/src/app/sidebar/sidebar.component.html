@@ -2,7 +2,7 @@
 
   <mat-sidenav #sidenav [mode]="mode.value || 'over'" [opened]="true">
     <button mat-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon> Toggle</button>
-    <button mat-button>{{connestionStatus ? 'connected' : 'disconnected'}}</button>
+
     <mat-grid-list cols="2" rowHeight="130px">
       <mat-grid-tile>
         <div class="sidebar-item" draggable="true" (dragstart)="drag($event, 'input')">
@@ -219,7 +219,7 @@
       <ng-container *ngIf="!sidenav.opened">
         <button mat-button (click)="sidenav.toggle()"> <mat-icon>menu</mat-icon> Toggle</button>
       </ng-container>
-      <button mat-button (click)="clearBorad()">Clear Designer</button>
+      <button mat-button>{{connestionStatus ? 'Connected' : 'Disconnected'}}</button>
     </div>
     <ng-content></ng-content>
   </mat-sidenav-content>

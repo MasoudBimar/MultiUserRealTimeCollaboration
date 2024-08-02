@@ -9,7 +9,6 @@ import {
 export class CRDTWSService<T extends { id: string }> {
   document?: Map<string, T>;
   docName: string = '';
-  // offlineUpdates = new Map<string, T>();
   isOnline = false;
   constructor(
     public websocketService: WebSocketService<T>,
@@ -72,8 +71,8 @@ export class CRDTWSService<T extends { id: string }> {
 
   open() {
     if (!this.isOnline) {
-      this.websocketService.connect({reconnect: true});
-      // this.websocketService.sendMessage({ type: 'imalive' });
+      this.websocketService.connect({ reconnect: true });
+      this.websocketService.sendMessage({ type: 'imalive' });
     }
   }
 

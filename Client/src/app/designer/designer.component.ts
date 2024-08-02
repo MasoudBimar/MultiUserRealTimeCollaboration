@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BaseCustomizableComponent } from '@app-components';
@@ -12,7 +12,7 @@ import {
 } from '@app-services';
 import { Subscription } from 'rxjs';
 import { UpdateElementFormComponent } from '../update-element-form/update-element-form.component';
-import { CustomizableModel, DomRectModel, Message } from './../model/customizable.model';
+import { CustomizableModel, DomRectModel, FormEditorTypeEnum, Message } from './../model/customizable.model';
 
 
 @Component({
@@ -24,7 +24,8 @@ import { CustomizableModel, DomRectModel, Message } from './../model/customizabl
     BaseCustomizableComponent
   ],
   templateUrl: './designer.component.html',
-  styleUrl: './designer.component.scss'
+  styleUrl: './designer.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DesignerComponent implements OnDestroy, AfterViewInit {
   document = new Map<string, CustomizableModel>();
@@ -92,16 +93,16 @@ export class DesignerComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  allowDrop(ev: any) {
+  allowDrop(ev: DragEvent) {
     ev.preventDefault();
   }
 
-  drop(ev: any) {
+  drop(ev: DragEvent) {
     ev.preventDefault();
-    if (ev.dataTransfer.getData("Text")) {
+    if (ev.dataTransfer?.getData("Text")) {
       const newItem = new CustomizableModel();
       newItem.domRect = new DomRectModel(ev.offsetX, ev.offsetY, 300, 100)
-      newItem.itemType = ev.dataTransfer.getData("Text");
+      newItem.itemType = ev.dataTransfer.getData("Text") as FormEditorTypeEnum;
       this.crdtwsService.insert(newItem);
       this.componentLoaderService.addDynamicComponent(newItem, newItem.id);
     }

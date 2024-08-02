@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
-import { catchError, concatAll, retry, tap } from 'rxjs/operators';
+import { catchError, retry, switchAll, tap } from 'rxjs/operators';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from '../../environments/environment';
 import { Message } from '../model/customizable.model';
@@ -14,7 +14,7 @@ export class WebSocketService<T> {
 
   private messagesSubject$ = new BehaviorSubject<Observable<Message<T>>>(EMPTY);
 
-  public messages$ = this.messagesSubject$.pipe(concatAll(), catchError(e => { throw e }));
+  public messages$ = this.messagesSubject$.pipe(switchAll(), catchError(e => { throw e }));
   public connectionStatus = new BehaviorSubject<boolean>(false);
 
   public getNewWebSocket(): WebSocketSubject<Message<T>> {
@@ -22,14 +22,14 @@ export class WebSocketService<T> {
       url: environment.wsServerUrl,
       closeObserver: {
         next: () => {
-          console.log('[websocket service] connection closed');
+          // console.log('[websocket service] connection closed');
           this.connectionStatus.next(false);
         }
       },
       openObserver: {
         next: () => {
           this.connectionStatus.next(true);
-          console.log('[websocket service] connection opened');
+          // console.log('[websocket service] connection opened');
         }
       }
     })

@@ -18,7 +18,7 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   @Input() appearance: 'fill' | 'outline' = 'fill';
   @Input() labelPosition: "default" | "start" | "top" = 'top';
   @Input() disabled: boolean = false;
-  @Input() value: any = 'test';
+  @Input() value: unknown = 'test';
   @Input() itemType: string = 'input';
   @Input({ required: true }) domRect!: DomRectModel;
   @Input() textContent = 'text';
@@ -42,7 +42,7 @@ export class BaseCustomizableComponent implements AfterViewInit, OnChanges {
   }
 
   @HostListener('mousedown', ['$event'])
-  onDragMouseDown(event: any) {
+  onDragMouseDown(event: MouseEvent) {
     event.preventDefault();
     this.setPreviousCursorPosition(event);
     this.isDragging = true;

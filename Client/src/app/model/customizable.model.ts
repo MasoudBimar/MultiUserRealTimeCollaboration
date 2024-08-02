@@ -10,7 +10,7 @@ export class CustomizableModel {
   placeholder?: string;
   appearance?: 'fill' | 'outline';
   disabled?: boolean;
-  value?: any;
+  value?: unknown;
   textContent = 'label';
   domRect?: DomRectModel;
   constructor() {
